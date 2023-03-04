@@ -115,7 +115,7 @@ const target = (0, path_1.join)(__dirname, 'icons-bundle.js');
             const filename = typeof item === 'string' ? item : item.filename;
             let content = JSON.parse(await fs_1.promises.readFile(filename, 'utf8'));
             // Filter icons
-            if (typeof item !== 'string' && item.icons?.length) {
+            if (typeof item !== 'string' && item.icons.length) {
                 const filteredContent = (0, utils_1.getIcons)(content, item.icons);
                 if (!filteredContent)
                     throw new Error(`Cannot find required icons in ${filename}`);
