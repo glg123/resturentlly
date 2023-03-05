@@ -1,0 +1,1 @@
+import{o as s,l as i,i as r,j as t}from"./main.990d9ea9.js";const n={class:"text-center"},c={class:"text-h4 font-weight-medium mb-3"},_={__name:"ErrorHeader",props:{errorTitle:{type:String,required:!0},errorDescription:{type:String,required:!0}},setup(o){const e=o;return(a,p)=>(s(),i("div",n,[r("h4",c,t(e.errorTitle),1),r("p",null,t(e.errorDescription),1)]))}};export{_};

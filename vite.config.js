@@ -15,7 +15,7 @@ import laravel from 'laravel-vite-plugin'
 export default defineConfig({
   server: {
     hmr: {
-      host: "127.0.0.1",
+      host: "rest.local.com",
     },
   },
   plugins: [
@@ -111,6 +111,7 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 5000,
+    outDir: 'public/build',
   },
   optimizeDeps: {
     exclude: ['vuetify'],
