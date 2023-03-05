@@ -20,17 +20,17 @@ export default defineConfig({
   },
   plugins: [
     laravel({
-  input: ['resources/js/main.js'],
-  refresh: true,
-}),
+      input: ['resources/js/main.js'],
+      refresh: true,
+    }),
     vue({
-  template: {
-      transformAssetUrls: {
+      template: {
+        transformAssetUrls: {
           base: null,
           includeAbsolute: false,
+        },
       },
-  },
-}),
+    }),
     vueJsx(),
 
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
