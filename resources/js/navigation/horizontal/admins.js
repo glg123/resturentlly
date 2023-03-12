@@ -1,12 +1,12 @@
 export default [
 
-  { heading: 'Admins & Permission' },
+
   {
     title: 'Admins',
-    icon: { icon: 'tabler-user' },
+    icon: { icon: 'tabler-user-minus' },
     children: [
-      { title: 'List', to: 'dashboards-apps-user-list' },
-      { title: 'AddNew', to: 'dashboards-apps-user-add-add_new' },
+      { title: 'List', to: 'admin-apps-admins-list' },
+      { title: 'AddNew', to: 'admin-apps-admins-add-add_new' },
     ],
   },
 

@@ -8,7 +8,7 @@ import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import NavBarI18n from '@/layouts/components/NavBarI18n.vue'
 
-import Test3 from '@/layouts/components/test3.vue'
+import Watch from '@/layouts/components/watch.vue'
 import {
   emailValidator,
   requiredValidator,
@@ -97,7 +97,7 @@ const onSubmit = () => {
       </VCol>
       <VCol lg="4"
             class="d-none d-lg-flex">
-        <Test3/>
+        <Watch/>
       </VCol>
       <VCol
         cols="12"

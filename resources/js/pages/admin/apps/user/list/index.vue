@@ -19,7 +19,6 @@ const fetchUsers = () => {
   userListStore.fetchUsers({
     q: searchQuery.value,
     status: selectedStatus.value,
-    plan: selectedPlan.value,
     role: selectedRole.value,
     perPage: rowPerPage.value,
     currentPage: currentPage.value,

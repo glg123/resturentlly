@@ -1,10 +1,16 @@
 import { defineStore } from 'pinia'
 import axios from '@axios'
+import {useThemeConfig} from "@core/composable/useThemeConfig";
+const { isAppRtl } = useThemeConfig()
 
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
-axios.defaults.headers.common['Language'] = 'ar'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+}
+axios.defaults.headers.common['Language'] = 'en'
 axios.defaults.headers.common['type'] = 'Admin'
 axios.defaults.headers.common['auth'] = 'token ' + token
 export const useAdminListStore = defineStore('AdminListStore', {
@@ -16,6 +22,12 @@ export const useAdminListStore = defineStore('AdminListStore', {
 
 
       return axios.get('/admins/list', { params,token })
+    },
+
+    fetchRoles(params) {
+
+
+      return axios.get('/roles/list', { params,token })
     },
 
     // 👉 Add User

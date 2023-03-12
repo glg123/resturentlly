@@ -21,10 +21,12 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'mobile',
         'password',
         'api_token',
         'role',
         'avatar',
+        'status',
     ];
 
     /**
@@ -62,11 +64,17 @@ class Admin extends Authenticatable
         return $this->hasOne(Adminabilitie::class, 'admin_id');
     }
 
+
+
     public function getAvatarAttribute($value)
     {
 
-        if ($value != null) {
-            return url((@$this->attributes['avatar']));
+        if ($value) {
+
+
+            return \Storage::disk('Admin')->url($value);
         }
+        return $value;
+
     }
 }

@@ -76,9 +76,9 @@ const headerValues = computed(() => {
       <div class="customizer-heading d-flex align-center justify-space-between">
         <div>
           <h6 class="text-h6">
-            THEME CUSTOMIZER
+            {{$t('THEME_CUSTOMIZER')}}
           </h6>
-          <span class="text-body-1">Customize & Preview in Real Time</span>
+          <span class="text-body-1">{{$t('Customize & Preview in Real Time')}}</span>
         </div>
         <VBtn
           icon
@@ -107,7 +107,7 @@ const headerValues = computed(() => {
         >
           <!-- 👉 Skin -->
           <h6 class="text-base font-weight-regular">
-            Skins
+            {{$t('Skins')}}
           </h6>
           <VRadioGroup
             v-model="skin"
@@ -123,14 +123,14 @@ const headerValues = computed(() => {
 
           <!-- 👉 Theme -->
           <h6 class="mt-3 text-base font-weight-regular">
-            Theme
+            {{$t('Theme')}}
           </h6>
           <div class="d-flex align-center">
             <VLabel
               for="pricing-plan-toggle"
               class="me-3"
             >
-              Light
+              {{$t('Light')}}
             </VLabel>
 
             <div>
@@ -146,7 +146,7 @@ const headerValues = computed(() => {
 
           <!-- 👉 Primary color -->
           <h6 class="mt-3 text-base font-weight-regular">
-            Primary Color
+            {{$t('Primary Color')}}
           </h6>
           <div class="d-flex gap-x-4 mt-2">
             <div
@@ -174,7 +174,7 @@ const headerValues = computed(() => {
         <CustomizerSection title="LAYOUT">
           <!-- 👉 Content Width -->
           <h6 class="text-base font-weight-regular">
-            Content width
+            {{$t('Content width')}}
           </h6>
           <VRadioGroup
             v-model="appContentWidth"
@@ -204,7 +204,7 @@ const headerValues = computed(() => {
           </VRadioGroup>
           <!-- 👉 Footer Type -->
           <h6 class="mt-3 text-base font-weight-regular">
-            Footer Type
+            {{$t('Footer Type')}}
           </h6>
           <VRadioGroup
             v-model="footerType"
@@ -223,7 +223,7 @@ const headerValues = computed(() => {
               for="customizer-navbar-blur"
               class="text-high-emphasis"
             >
-              Navbar Blur
+              {{$t('Navbar Blur')}}
             </VLabel>
             <div>
               <VSwitch
@@ -240,7 +240,7 @@ const headerValues = computed(() => {
         <CustomizerSection title="MENU">
           <!-- 👉 Menu Type -->
           <h6 class="text-base font-weight-regular">
-            Menu Type
+             {{$t('Menu Type')}}
           </h6>
           <VRadioGroup
             v-model="appContentLayoutNav"
@@ -263,7 +263,7 @@ const headerValues = computed(() => {
               for="customizer-menu-collapsed"
               class="text-high-emphasis"
             >
-              Collapsed Menu
+              {{$t('Collapsed Menu')}}
             </VLabel>
             <div>
               <VSwitch
@@ -283,7 +283,7 @@ const headerValues = computed(() => {
               for="customizer-menu-semi-dark"
               class="text-high-emphasis"
             >
-              Semi Dark Menu
+              {{$t('Semi Dark Menu')}}
             </VLabel>
             <div>
               <VSwitch
@@ -297,14 +297,14 @@ const headerValues = computed(() => {
         <!-- !SECTION -->
 
         <!-- SECTION MISC -->
-        <CustomizerSection title="MISC">
+        <CustomizerSection :title="$t('MISC')">
           <!-- 👉 RTL -->
           <div class="d-flex align-center justify-space-between">
             <VLabel
               for="customizer-rtl"
               class="text-high-emphasis"
             >
-              RTL
+              {{$t('RTL')}}
             </VLabel>
             <div>
               <VSwitch
@@ -326,7 +326,7 @@ const headerValues = computed(() => {
                   for="route-transition"
                   class="text-high-emphasis"
                 >
-                  Router Transition
+                  {{$t('Router Transition')}}
                 </VLabel>
               </VCol>
 

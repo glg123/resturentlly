@@ -100,7 +100,7 @@ const logout = () => {
           <VDivider class="my-2" />
 
           <!-- 👉 Profile -->
-          <VListItem :to="{ name: 'admin-apps-admins-view-id', params: { id: userData.id } }">
+          <VListItem :to="{ name: 'admin-apps-admins-profile-my' }">
             <template #prepend>
               <VIcon
                 class="me-2"
@@ -125,31 +125,7 @@ const logout = () => {
             <VListItemTitle>{{$t('Settings')}}</VListItemTitle>
           </VListItem>
 
-          <!-- 👉 Pricing -->
-          <VListItem :to="{ name: 'pricing' }">
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="tabler-currency-dollar"
-                size="22"
-              />
-            </template>
 
-            <VListItemTitle>{{$t('Pricing')}}</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 FAQ -->
-          <VListItem :to="{ name: 'admin-pages-faq' }">
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="tabler-help"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>{{$t('FAQ')}}</VListItemTitle>
-          </VListItem>
 
           <!-- Divider -->
           <VDivider class="my-2" />

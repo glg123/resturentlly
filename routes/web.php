@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+//dd(bcrypt('123456'));
 /*
 |--------------------------------------------------------------------------
 | Web Routes

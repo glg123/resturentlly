@@ -152,7 +152,7 @@ const resolveCategories = val => {
                 class="text-base text-disabled cursor-pointer me-2"
                 @click="clearSearchAndCloseDialog"
               >
-                [esc]
+                [{{$t('esc')}}]
               </div>
 
               <VBtn

@@ -71,6 +71,7 @@ class Kernel extends HttpKernel
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \App\Http\Middleware\PermissionMiddleware::class,
+        'LanguageSwitcher' => \App\Http\Middleware\LanguageSwitcher::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
 
     ];

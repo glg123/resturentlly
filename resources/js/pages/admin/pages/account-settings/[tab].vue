@@ -1,30 +1,44 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { useAdminListStore } from '@/views/apps/admin/useAdminListStore'
+// eslint-disable-next-line import/named
+import { useSettingStore } from '@/views/apps/setting/SettingStore'
 import AccountSettingsAccount from '@/views/admin/pages/account-settings/AccountSettingsAccount.vue'
-import AccountSettingsSecurity from '@/views/admin/pages/account-settings/AccountSettingsSecurity.vue'
+import Service from '@/views/admin/pages/account-settings/Service.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const adminListStore = useAdminListStore()
+
+const settingStore = useSettingStore()
+
 const route = useRoute()
 const userData = ref()
+const serviceData = ref()
 const activeTab = ref(route.params.tab)
 
 adminListStore.getSingleUser(1).then(response => {
   userData.value = response.data
 })
 
+settingStore.services().then(response => {
+  serviceData.value = response.data
+})
+
+
 // tabs
 const tabs = [
   {
-    title: 'Account',
-    icon: 'tabler-users',
+    title: t('Site_Settings'),
+    icon: 'tabler-list',
     tab: 'account',
   },
   {
-    title: 'Security',
-    icon: 'tabler-lock',
-    tab: 'security',
+    title: t('Service_Settings'),
+    icon: 'tabler-list',
+    tab: 'service',
   },
+
 
 ]
 </script>
@@ -61,12 +75,12 @@ const tabs = [
       </VWindowItem>
 
       <!-- Security -->
-      <VWindowItem value="security">
-        <AccountSettingsSecurity />
-      </VWindowItem>
+
 
       <!-- Billing -->
-
+      <VWindowItem value="service">
+        <Service />
+      </VWindowItem>
 
       <!-- Notification -->
 

@@ -40,7 +40,7 @@ const { width: windowWidth } = useWindowSize()
           />
         </VBtn>
 
-        <NavSearchBar class="ms-lg-n3" />
+
 
         <VSpacer />
 

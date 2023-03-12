@@ -147,6 +147,14 @@ return [
 
     'attributes' => [
         'name'                  => 'الاسم',
+        'slider_title_ar'                  => 'عنوان السلايدر عربي',
+        'slider_description_ar'                  => 'وصف السلايدر عربي',
+        'slider_title_en'                  => 'عنوان السلايدر English',
+        'slider_description_en'                  => 'وصف السلايدر English',
+        'about_us_ar'                  => 'من نحن عربي',
+        'about_us_en'                  => 'من نحن English',
+        'slider_back_img'                  => 'الصورة الخلفية',
+        'slider_front_img'                  => 'الصورة الامامية',
         'username'              => 'اسم المُستخدم',
         'email'                 => 'البريد الالكتروني',
         'first_name'            => 'الاسم الأول',

@@ -35,7 +35,7 @@ const { appRouteTransition } = useThemeConfig()
       </RouterLink>
       <VSpacer />
 
-      <NavSearchBar trigger-btn-class="ms-lg-n3" />
+
 
       <NavBarI18n />
       <NavbarThemeSwitcher />

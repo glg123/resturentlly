@@ -3,7 +3,8 @@ import AddNewUserDrawer from '@/views/apps/user/list/AddNewUserDrawer.vue'
 
 import { avatarText } from '@core/utils/formatters'
 import { useAdminListStore } from "@/views/apps/admin/useAdminListStore"
-
+import { useI18n } from "vue-i18n"
+const { t } = useI18n()
 const userListStore = useAdminListStore()
 const searchQuery = ref('')
 const selectedRole = ref()
@@ -14,6 +15,10 @@ const currentPage = ref(1)
 const totalPage = ref(1)
 const totalUsers = ref(0)
 const users = ref([])
+const admins_active = ref(1)
+const admins_count = ref(1)
+const admins_not_active = ref(1)
+const admins_block = ref(1)
 
 // 👉 Fetching users
 const fetchUsers = () => {
@@ -25,9 +30,14 @@ const fetchUsers = () => {
     perPage: rowPerPage.value,
     page: currentPage.value,
   }).then(response => {
-    users.value = response.data.data
-    totalPage.value = response.data.total
-    totalUsers.value = response.data.total
+    //console.log(response.data.admins)
+    users.value = response.data.admins.data
+    admins_count.value = response.data.admins.data.length
+    totalPage.value = response.data.admins.total
+    totalUsers.value = response.data.admins.total
+    admins_active.value = response.data.admins_active
+    admins_not_active.value = response.data.admins_not_active
+    admins_block.value = response.data.admins_block
   }).catch(error => {
     console.error(error)
   })
@@ -44,58 +54,36 @@ watchEffect(() => {
 // 👉 search filters
 const roles = [
   {
-    title: 'Admin',
+    title: t('admin'),
     value: 'admin',
   },
   {
-    title: 'Author',
-    value: 'author',
-  },
-  {
-    title: 'Editor',
+    title:  t('editor'),
     value: 'editor',
   },
   {
-    title: 'Maintainer',
+    title:  t('maintainer'),
     value: 'maintainer',
   },
   {
-    title: 'Subscriber',
+    title:  t('subscriber'),
     value: 'subscriber',
   },
 ]
 
-const plans = [
-  {
-    title: 'Basic',
-    value: 'basic',
-  },
-  {
-    title: 'Company',
-    value: 'company',
-  },
-  {
-    title: 'Enterprise',
-    value: 'enterprise',
-  },
-  {
-    title: 'Team',
-    value: 'team',
-  },
-]
 
 const status = [
   {
-    title: 'Pending',
-    value: 'pending',
+    title: t('block'),
+    value: 'block',
   },
   {
-    title: 'Active',
+    title: t('active'),
     value: 'active',
   },
   {
-    title: 'Inactive',
-    value: 'inactive',
+    title: t('not_active'),
+    value: 'not_active',
   },
 ]
 
@@ -156,7 +144,7 @@ const paginationData = computed(() => {
   const firstIndex = users.value.length ? (currentPage.value - 1) * rowPerPage.value + 1 : 0
   const lastIndex = users.value.length + (currentPage.value - 1) * rowPerPage.value
 
-  return `Showing ${ firstIndex } to ${ lastIndex } of ${ totalUsers.value } entries`
+  return ` ${ t("Showing") } ${ firstIndex } ${ t("to") } ${ lastIndex } ${ t("of") } ${ totalUsers.value } ${ t("entries") }`
 })
 
 const addNewUser = userData => {
@@ -171,34 +159,34 @@ const userListMeta = [
   {
     icon: 'tabler-user',
     color: 'primary',
-    title: 'Session',
-    stats: '21,459',
+    title: t('total_user'),
+    stats: admins_count,
     percentage: +29,
-    subtitle: 'Total Users',
+    subtitle: t('total_user'),
   },
   {
     icon: 'tabler-user-plus',
     color: 'error',
-    title: 'Paid Users',
-    stats: '4,567',
+    title: t('not_active_user'),
+    stats: admins_not_active,
     percentage: +18,
-    subtitle: 'Last week analytics',
+    subtitle: t('not_active_user'),
   },
   {
     icon: 'tabler-user-check',
     color: 'success',
-    title: 'Active Users',
-    stats: '19,860',
+    title: t('active_user'),
+    stats: admins_active,
     percentage: -14,
-    subtitle: 'Last week analytics',
+    subtitle: t('active_user'),
   },
   {
     icon: 'tabler-user-exclamation',
     color: 'warning',
-    title: 'Pending Users',
-    stats: '237',
+    title: t('block_user'),
+    stats: admins_block,
     percentage: +42,
-    subtitle: 'Last week analytics',
+    subtitle: t('block_user'),
   },
 ]
 </script>
@@ -221,7 +209,6 @@ const userListMeta = [
                 <h6 class="text-h6">
                   {{ meta.stats }}
                 </h6>
-                <span :class="meta.percentage > 0 ? 'text-success' : 'text-error'">({{ meta.percentage }}%)</span>
               </div>
               <span>{{ meta.subtitle }}</span>
             </div>
@@ -237,7 +224,7 @@ const userListMeta = [
       </VCol>
 
       <VCol cols="12">
-        <VCard title="Search Filter">
+        <VCard :title="$t('Search Filter')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -248,25 +235,13 @@ const userListMeta = [
               >
                 <VSelect
                   v-model="selectedRole"
-                  label="Select Role"
+                  :label="$t('Select Role')"
                   :items="roles"
                   clearable
                   clear-icon="tabler-x"
                 />
               </VCol>
-              <!-- 👉 Select Plan -->
-              <VCol
-                cols="12"
-                sm="4"
-              >
-                <VSelect
-                  v-model="selectedPlan"
-                  label="Select Plan"
-                  :items="plans"
-                  clearable
-                  clear-icon="tabler-x"
-                />
-              </VCol>
+
               <!-- 👉 Select Status -->
               <VCol
                 cols="12"
@@ -274,7 +249,7 @@ const userListMeta = [
               >
                 <VSelect
                   v-model="selectedStatus"
-                  label="Select Status"
+                  :label="$t('Select Status')"
                   :items="status"
                   clearable
                   clear-icon="tabler-x"
@@ -316,17 +291,17 @@ const userListMeta = [
                 color="secondary"
                 prepend-icon="tabler-screen-share"
               >
-                Export
+                {{ $t('export') }}
               </VBtn>
 
               <!-- 👉 Add user button -->
               <VBtn>
 
                 <RouterLink
-                  :to="{ name: 'apps-user-view-test', params: { id:20 } }"
+                  :to="{ name: 'admin-apps-admins-add-add_new'}"
                   class="font-weight-medium user-list-name"
                 >
-                  Add New User
+                  {{ $t('AddNew') }}
                 </RouterLink>
 
               </VBtn>
@@ -346,13 +321,7 @@ const userListMeta = [
                   {{$t('role')}}
                 </th>
                 <th scope="col">
-                  PLAN
-                </th>
-                <th scope="col">
-                  BILLING
-                </th>
-                <th scope="col">
-                  STATUS
+                  {{$t('status')}}
                 </th>
                 <th scope="col">
                   {{ $t('action') }}
@@ -405,18 +374,9 @@ const userListMeta = [
                     size="30"
                     class="me-4"
                   />
-                  <span class="text-capitalize text-base">{{ user.role }}</span>
+                  <span class="text-capitalize text-base">{{ $t(user.role) }}</span>
                 </td>
 
-                <!-- 👉 Plan -->
-                <td>
-                  <span class="text-capitalize text-base font-weight-semibold">{{ user.currentPlan }}</span>
-                </td>
-
-                <!-- 👉 Billing -->
-                <td>
-                  <span class="text-base">{{ user.billing }}</span>
-                </td>
 
                 <!-- 👉 Status -->
                 <td>
@@ -426,7 +386,7 @@ const userListMeta = [
                     size="small"
                     class="text-capitalize"
                   >
-                    {{ user.status }}
+                    {{ $t(user.status)  }}
                   </VChip>
                 </td>
 
@@ -440,11 +400,13 @@ const userListMeta = [
                     size="x-small"
                     color="default"
                     variant="text"
+                    :to="{ name: 'admin-apps-admins-view-id', params: { id: user.id } }"
                   >
                     <VIcon
                       size="22"
                       icon="tabler-edit"
                     />
+
                   </VBtn>
 
                   <VBtn
@@ -452,6 +414,7 @@ const userListMeta = [
                     size="x-small"
                     color="default"
                     variant="text"
+                    :to="{ name: 'admin-apps-admins-view-id', params: { id: user.id } }"
                   >
                     <VIcon
                       size="22"
@@ -459,30 +422,7 @@ const userListMeta = [
                     />
                   </VBtn>
 
-                  <VBtn
-                    icon
-                    size="x-small"
-                    color="default"
-                    variant="text"
-                  >
-                    <VIcon
-                      size="22"
-                      icon="tabler-dots-vertical"
-                    />
 
-                    <VMenu activator="parent">
-                      <VList>
-                        <VListItem
-                          title="View"
-                          :to="{ name: 'admin-apps-user-view-id', params: { id: user.id } }"
-                        />
-                        <VListItem
-                          title="Suspend"
-                          href="javascript:void(0)"
-                        />
-                      </VList>
-                    </VMenu>
-                  </VBtn>
                 </td>
               </tr>
             </tbody>
@@ -494,7 +434,7 @@ const userListMeta = [
                   colspan="7"
                   class="text-center"
                 >
-                  No data available
+                 {{$t('No data available')}}
                 </td>
               </tr>
             </tfoot>

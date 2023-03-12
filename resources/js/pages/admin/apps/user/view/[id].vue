@@ -35,7 +35,7 @@ const tabs = [
   },
 ]
 
-adminListStore.fetchUser(Number(route.params.id)).then(response => {
+adminListStore.getSingleUser(Number(route.params.id)).then(response => {
   userData.value = response.data
 })
 </script>

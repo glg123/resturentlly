@@ -9,6 +9,9 @@ import vuetify from '@/plugins/vuetify'
 import { loadFonts } from '@/plugins/webfontloader'
 import router from '@/router'
 import { abilitiesPlugin } from '@casl/vue'
+import { useI18n } from 'vue-i18n'
+
+//const { t } = useI18n()
 // eslint-disable-next-line import/no-unresolved
 import '@core-scss/template/index.scss'
 import '@styles/styles.scss'
