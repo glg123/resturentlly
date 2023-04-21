@@ -46,6 +46,7 @@ class AdminRole extends Model
 
     ];
     protected $appends = ['role_name'];
+    protected $with=['RolePermissions'];
 
     public function getRoleNameAttribute()
     {
@@ -59,6 +60,9 @@ class AdminRole extends Model
         return $this->$colum_name;
     }
 
-
+    public function RolePermissions()
+    {
+        return $this->hasOne(RolePermission::class, 'role_id');
+    }
 
 }

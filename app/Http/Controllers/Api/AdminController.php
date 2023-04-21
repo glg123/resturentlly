@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\AdminPermission;
 use App\Models\AdminRole;
+use App\Models\RolePermission;
 use App\Models\Setting;
 use Auth;
 use App\Models\User;
@@ -30,8 +32,8 @@ class AdminController extends Controller
         if ($request->get('status')) {
             $admins = $admins->where('status', $request->get('status'));
         }
-        if ($request->get('role')) {
-            $admins = $admins->where('role', $request->get('role'));
+        if ($request->get('admin_role_id')) {
+            $admins = $admins->where('admin_role_id', $request->get('admin_role_id'));
         }
         if ($request->get('q')) {
             $admins = $admins->where('name', 'like', '%' . $request->get('q') . '%');
@@ -50,6 +52,191 @@ class AdminController extends Controller
         return response()->json($array);
     }
 
+    public function admins_permissions(Request $request)
+    {
+
+
+        $user = auth()->guard('Admin')->user();
+
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if ($user == null) {
+
+            return response()->json($response, $status);
+        }
+        $admins_permissions = AdminPermission::query();
+        if ($request->get('status')) {
+            $admins_permissions = $admins_permissions->where('status', $request->get('status'));
+        }
+        $admins_permissions = $admins_permissions->get();
+
+        return response()->json($admins_permissions);
+    }
+
+
+    public function add_roles_permissions(Request $request)
+    {
+
+
+        $user = auth()->guard('Admin')->user();
+
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if ($user == null) {
+
+            return response()->json($response, $status);
+        }
+        $x = [
+            array('action' => 'manage',
+                'subject' => 'all'),
+            array('action' => 'manage',
+                'subject' => 'all')
+
+
+        ];
+
+        $rules = Validator::make($request->all(), [
+
+
+            'role_name_en' => 'required',
+            'role_name_ar' => 'required',
+            'status' => 'required',
+            'permissions' => 'required',
+
+        ]);
+
+        if ($rules->fails()) {
+            return JsonResponse::fail($rules->errors()->first(), 400);
+        }
+        $permissions = [];
+        if (in_array(0, $request->get('permissions'))) {
+            $permissions = $x;
+        } else {
+            for ($i = 0; $i < count($request->get('permissions')); $i++) {
+                $permissions[$i] = array('action' => 'read',
+                    'subject' => $request->get('permissions')[$i]);
+            }
+        }
+
+
+        // dd($request->all(),$permissions,$x);
+        $request->merge([
+            'abilities' => $permissions,
+        ]);
+        $AdminRole = AdminRole::create($request->only([
+            'role_name_en',
+            'role_name_ar',
+            'abilities',
+            'status',
+
+        ]));
+        $request->merge([
+            'role_id' => $AdminRole->id
+        ]);
+        $RolePermission = RolePermission::create($request->only([
+            'role_id',
+            'abilities',
+            'status',
+
+        ]));
+
+
+        return response()->json($RolePermission);
+    }
+
+
+    public function edit_roles_permissions(Request $request, $id)
+    {
+        $user = auth()->guard('Admin')->user();
+
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if ($user == null) {
+
+            return response()->json($response, $status);
+        }
+
+
+        $rules = Validator::make($request->all(), [
+
+
+            'role_name_en' => 'sometimes|required',
+            'role_name_ar' => 'sometimes|required',
+            'status' => 'sometimes|required',
+            'permissions' => 'sometimes|required',
+
+        ]);
+
+        if ($rules->fails()) {
+            return JsonResponse::fail($rules->errors()->first(), 400);
+        }
+
+        $permissions = [];
+        for ($i = 0; $i < count($request->get('permissions')); $i++) {
+            $permissions[$i] = array('action' => 'read',
+                'subject' => $request->get('permissions')[$i]);
+        }
+
+        // dd($request->all(),$permissions,$x);
+        $request->merge([
+            'abilities' => $permissions,
+        ]);
+
+        $RolePermission = RolePermission::where('role_id', $id)->first();
+        if ($RolePermission) {
+            $request->merge([
+                'role_id' => $id
+            ]);
+            $RolePermission->update($request->only([
+                'role_id',
+                'abilities',
+                'status',
+
+            ]));
+        } else {
+            $request->merge([
+                'role_id' => $id
+            ]);
+            $RolePermission = RolePermission::create($request->only([
+                'role_id',
+                'abilities',
+                'status',
+
+            ]));
+        }
+
+
+        return response()->json($RolePermission);
+    }
+
+
+    public function delete_roles_permissions($id)
+    {
+
+
+        $user = auth()->guard('Admin')->user();
+
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if ($user == null) {
+
+            return response()->json($response, $status);
+        }
+        $AdminPermission = AdminRole::find($id);
+
+        if ($AdminPermission) {
+
+            $AdminPermission->delete();
+        }
+
+        return response()->json([]);
+    }
+
+
     public function roles(Request $request)
     {
         $user = auth()->guard('Admin')->user();
@@ -66,16 +253,13 @@ class AdminController extends Controller
             $roles = $roles->where('status', $request->get('status'));
         }
         if ($request->get('q')) {
-            $roles = $roles
-                ->where('role_name_en', 'like', '%' . $request->get('q') . '%')
-                ->where('role_name_en', 'like', '%' . $request->get('q') . '%');
+            $roles = $roles->where('role_name_en', 'like', '%' . $request->get('q') . '%')
+                ->orwhere('role_name_ar', 'like', '%' . $request->get('q') . '%');
         }
-        $roles = $roles->paginate(10);
-        $array = [
-            'roles' => $roles,
-        ];
-        return response()->json($array);
+        $roles = $roles->get();
+        return response()->json($roles);
     }
+
     public function single_admin($id)
     {
 
@@ -90,6 +274,24 @@ class AdminController extends Controller
             return response()->json($response, $status);
         }
         $user = Admin::find($id);
+        return response()->json($user);
+        //  return ['data' => $user];
+    }
+
+    public function single_roles($id)
+    {
+
+
+        $user = auth()->guard('Admin')->user();
+
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if ($user == null) {
+
+            return response()->json($response, $status);
+        }
+        $user = AdminRole::find($id);
         return response()->json($user);
         //  return ['data' => $user];
     }
@@ -166,7 +368,7 @@ class AdminController extends Controller
             'name' => 'sometimes|required',
             'email' => 'sometimes|required',
             'status' => 'sometimes|required',
-            'role' => 'sometimes|required',
+            'admin_role_id' => 'sometimes|required',
             'mobile' => 'sometimes|required',
             'avatar' => 'sometimes|required',
             'password' => 'sometimes|required|min:6',
@@ -179,9 +381,16 @@ class AdminController extends Controller
 
         $admin = Admin::where('id', $id)->first();
 
-        $request->merge([
+        if($request->get('admin_role_id'))
+        {
+            $admin_role = AdminRole::find($request->get('admin_role_id'));
+            $request->merge([
+                'admin_role_id' => $admin_role->id,
+                'role' => $admin_role->role_name,
+            ]);
 
-        ]);
+        }
+
 
 
         $admin->update($request->only([
@@ -234,7 +443,7 @@ class AdminController extends Controller
             'name' => 'required',
             'email' => 'required',
             'status' => 'required',
-            'role' => 'required',
+            'admin_role_id' => 'required',
             'mobile' => 'required',
             'avatar' => 'required',
             'password' => 'required|min:6',
@@ -245,9 +454,11 @@ class AdminController extends Controller
             return JsonResponse::fail($rules->errors()->first(), 400);
         }
 
-
+        $admin_role = AdminRole::find($request->get('admin_role_id'));
         $request->merge([
-            'password' => bcrypt($request->get('password'))
+            'password' => bcrypt($request->get('password')),
+            'admin_role_id' => $admin_role->id,
+            'role' => $admin_role->role_name,
         ]);
 
 
@@ -256,10 +467,13 @@ class AdminController extends Controller
             'email',
             'mobile',
             'role',
+            'admin_role_id',
             'status',
             'password',
         ]));
         $admin = Admin::where('id', $admin->id)->first();
+        $admin->api_token = $admin->createToken('api_token')->plainTextToken;
+        $admin->save();
         if (preg_match('/^data:image\/(\w+);base64,/', $request->get('avatar'))) {
             $data = substr($request->get('avatar'), strpos($request->get('avatar'), ',') + 1);
             $data = base64_decode($data);

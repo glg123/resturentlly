@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Session;
@@ -11,7 +12,7 @@ class SettingController extends Controller
 
     public function home()
     {
-        $settings = Setting::where('id',1)->first();
+        $settings = Setting::where('id', 1)->first();
         return view('home', compact('settings'));
     }
 
@@ -26,6 +27,12 @@ class SettingController extends Controller
 
         //  dd(Session::get('locale'));
         return back();
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return 'true';
     }
 
 

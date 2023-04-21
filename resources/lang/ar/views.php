@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'logout'          => 'تسجيل خروج',
+    'my_profile'          => 'ملفي الشخصي',
     // frontend
     'email'                                                      => 'البريد الإلكتروني',
     'login'                                                      => 'تسجيل الدخول',

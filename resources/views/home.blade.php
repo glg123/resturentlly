@@ -2,7 +2,7 @@
 @if(app()->getLocale() === "en")
     <html lang="{{app()->getLocale()}}">
     @else
-        <html lang="{{app()->getLocale()}}" >
+        <html lang="{{app()->getLocale()}}">
         @endif
 
 
@@ -70,8 +70,27 @@
                             </button>
                             <div class="collapse navbar-collapse" id="navbarCollapse">
                                 <div class="navbar-nav ms-auto py-0 pe-4">
-                                    <a href="/dashboards/register" class="nav-item nav-link active">{{__('views.register')}}</a>
-                                    <a href="/dashboards/login" class="nav-item nav-link active">{{__('views.login')}}</a>
+                                    @if(!auth()->user())
+                                        <a href="/register"
+                                           class="nav-item nav-link active">{{__('views.register')}}</a>
+                                        <a href="/choose_login"
+                                           class="nav-item nav-link active">{{__('views.login')}}</a>
+                                    @else
+                                        <div class="nav-item dropdown">
+                                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+
+                                                {{auth()->user()->first_name}} {{auth()->user()->last_name}}
+                                            </a>
+                                            <div class="dropdown-menu m-0">
+
+                                                <a href="" class="dropdown-item">  {{__('views.my_profile')}}</a>
+                                                <a id="logout" href="#"
+                                                   class="dropdown-item">  {{__('views.logout')}}</a>
+
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="nav-item dropdown">
                                         <?php
                                         $lang_list = [
@@ -86,14 +105,16 @@
                                         ];
                                         ?>
 
-                                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">  @if(app()->getLocale() === "en")
+                                        <a href="#" class="nav-link dropdown-toggle"
+                                           data-bs-toggle="dropdown">  @if(app()->getLocale() === "en")
                                                 {{__('views.English_swicher')}}
                                             @else
                                                 {{__('views.Arabic_swicher')}}
                                             @endif</a>
                                         <div class="dropdown-menu m-0">
                                             @foreach($lang_list as $lang_item )
-                                            <a href="{{ route('site.dashboard.lang', $lang_item['code']) }}" class="dropdown-item">{{$lang_item['text']}}</a>
+                                                <a href="{{ route('site.dashboard.lang', $lang_item['code']) }}"
+                                                   class="dropdown-item">{{$lang_item['text']}}</a>
                                             @endforeach
                                         </div>
                                     </div>
@@ -109,7 +130,8 @@
                                     <div class="col-lg-6 text-center text-lg-start">
                                         <h1 class="display-3 text-white animated slideInLeft">{{$settings->title}}</h1>
                                         <p class="text-white animated slideInLeft mb-4 pb-2">{!! $settings->description !!}</p>
-                                        <a href="" class="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">{{__('views.Read_More')}}</a>
+                                        <a href=""
+                                           class="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">{{__('views.Read_More')}}</a>
                                     </div>
                                     <div class="col-lg-6 text-center text-lg-end overflow-hidden">
                                         <img class="img-fluid" src="{{url($settings->slider_front_img)}}" alt="">
@@ -193,7 +215,8 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <h5 class="section-title ff-secondary text-start text-primary fw-normal">{{__('views.About_Us')}}</h5>
-                                    <h1 class="mb-4">{{__('views.Welcome_to')}} <i class="fa fa-utensils text-primary me-2"></i>{{env('APP_NAME')}}
+                                    <h1 class="mb-4">{{__('views.Welcome_to')}} <i
+                                                class="fa fa-utensils text-primary me-2"></i>{{env('APP_NAME')}}
                                     </h1>
                                     <p class="mb-4">{{$settings->about_us}}</p>
 
@@ -395,7 +418,28 @@
                 <script src="site/lib/tempusdominus/js/moment.min.js"></script>
                 <script src="site/lib/tempusdominus/js/moment-timezone.min.js"></script>
                 <script src="site/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+                <script type="text/javascript"
+                        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
+                <script>
+                    $('#logout').click(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '{{route('logout')}}',
+                            datatype: 'html',
+                            cache: 'false',
+                            success: function (response) {
+
+                                localStorage.clear();
+                                $.cookie('auth', null, {path: '/'})
+                                document.location.href = '{{url('/')}}';
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    });
+                </script>
                 <!-- Template Javascript -->
                 <script src="site/js/main.js"></script>
                 </body>

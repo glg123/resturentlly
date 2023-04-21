@@ -91,11 +91,35 @@ router.beforeEach(to => {
     */
   if (canNavigate(to)) {
     if (to.meta.redirectIfLoggedIn && isLoggedIn)
-      return '/admin/'
+    {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+      const userRole = userData && userData.role ? userData.role : null
+
+      if (userRole === 'admin')
+      {
+        return '/admin/'
+      }
+
+      else if (userRole === 'client')
+      {
+        //window.location.reload();
+
+      //  return '/'
+      }
+
+
+
+    }
+
   }
   else {
+
     if (isLoggedIn)
+    {
+
       return { name: 'not-authorized' }
+    }
+
     else
     {
       if(to.fullPath==='/admin/login')
@@ -106,6 +130,10 @@ router.beforeEach(to => {
       if(to.fullPath==='/dashboards/login')
       {
         return { name: 'dashboards-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
+      }
+      else {
+        return { name: 'not-authorized' }
+        return { name: 'admin-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
       }
 
     }

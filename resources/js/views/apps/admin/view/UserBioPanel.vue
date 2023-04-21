@@ -11,9 +11,13 @@ import {
 } from '@validators'
 
 const refInputEl_front = ref()
-
+const selectedRole = ref()
 const props = defineProps({
   userData: {
+    type: Object,
+    required: true,
+  },
+  roles: {
     type: Object,
     required: true,
   },
@@ -66,6 +70,7 @@ axios.defaults.headers.common['type'] = 'Admin'
 axios.defaults.headers.common['auth'] = 'token ' + token
 const userData = ref(structuredClone(toRaw(props.userData)))
 
+selectedRole.value=userData.value.admin_role_id
 
 
 const onFormSubmit = () => {
@@ -78,12 +83,12 @@ const onFormSubmit = () => {
       axios.post('admins/'+props.userData.id, {
 
         name: userData.value.name,
-        role: userData.value.role,
         email: userData.value.email,
         mobile: userData.value.mobile,
         avatar: userData.value.avatar,
         status: userData.value.status,
         password: userData.value.password,
+        admin_role_id: selectedRole.value,
         token,
       }).then(r => {
         isTrue.value = true
@@ -335,7 +340,19 @@ const resolveUserRoleVariant = role => {
                             :items="['active', 'not_active', 'block']"
                           />
                         </VCol>
-
+                        <VCol
+                          cols="12"
+                          md="6"
+                        >
+                          <!-- 👉 new password -->
+                          <VSelect
+                            v-model="selectedRole"
+                            chips
+                            :label="$t('Select Role')"
+                            :rules="[required]"
+                            :items="roles"
+                          />
+                        </VCol>
                         <VCol
                           cols="12"
                           md="6"

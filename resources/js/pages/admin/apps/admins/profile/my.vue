@@ -34,4 +34,6 @@ watch(route, fetchAboutData, { immediate: true })
 <route lang="yaml">
 meta:
  layout: default_admin
+ action: read
+ subject: Auth
 </route>

@@ -15,8 +15,11 @@ import {
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"
 import axios from "@axios"
+
 const route = useRoute()
 const router = useRouter()
+const rolesData = ref([])
+const length = ref([])
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
@@ -32,8 +35,52 @@ const required = val => {
   }
 
 }
-const sendFrom = () => {
 
+const fetchProjectData = () => {
+
+
+  axios.get('/admins/permissions/list', { token })
+    .then(response => {
+      //   console.log(response.data, 'res')
+      rolesData.value = response.data
+
+    })
+
+
+}
+
+watch(router, fetchProjectData, { immediate: true })
+
+
+const title_ar = ref('')
+const title_en = ref('')
+
+const refForm = ref()
+
+const selectedStatus = ref()
+
+const { t } = useI18n()
+
+const status = [
+  {
+    title: t('active'),
+    value: 'active',
+  },
+  {
+    title: t('not_active'),
+    value: 'not_active',
+  },
+]
+const refInputEl_front = ref()
+const isTrue = ref(false)
+const isError = ref(false)
+const disabled = ref(false)
+const loading = ref(false)
+
+
+const selectedCheckbox = ref([])
+
+const sendFrom = () => {
 
 
   refForm.value?.validate().then(({ valid: isValid }) => {
@@ -41,15 +88,13 @@ const sendFrom = () => {
     if (isValid) {
       loading.value = true
       disabled.value = true
-      axios.post('add/admins', {
+      axios.post('roles/permissions', {
 
-        name: Full_name.value,
-        mobile: mobile.value,
-        password: password.value,
-        email: email.value,
-        role: selectedRole.value,
+        role_name_en: title_ar.value,
+        role_name_ar: title_en.value,
         status: selectedStatus.value,
-        avatar: avatar.value,
+        permissions: selectedCheckbox.value,
+
         token,
       }).then(r => {
 
@@ -57,7 +102,7 @@ const sendFrom = () => {
         isTrue.value = true
         loading.value = false
         disabled.value = false
-        router.replace(route.query.to ? String(route.query.to) : '/admin/apps/admins/list/')
+        router.replace(route.query.to ? String(route.query.to) : '/admin/apps/permission/list/')
       }).catch(e => {
         console.log(e.response.data.message)
 
@@ -79,82 +124,19 @@ const sendFrom = () => {
 
 
 }
-
-const Full_name = ref('')
-const mobile = ref('')
-const matchRegularEx = ref('')
-const password = ref('')
-const repeatPassword = ref('')
-const email = ref('')
-const refForm = ref()
-const selectedRole = ref()
-const selectedStatus = ref()
-const avatar = ref()
-const { t } = useI18n()
-
-const roles = [
-  {
-    title: t('admin'),
-    value: 'admin',
-  },
-  {
-    title:  t('editor'),
-    value: 'editor',
-  },
-  {
-    title:  t('maintainer'),
-    value: 'maintainer',
-  },
-  {
-    title:  t('subscriber'),
-    value: 'subscriber',
-  },
-]
-const status = [
-  {
-    title: t('block'),
-    value: 'block',
-  },
-  {
-    title: t('active'),
-    value: 'active',
-  },
-  {
-    title: t('not_active'),
-    value: 'not_active',
-  },
-]
-const refInputEl_front = ref()
-const isTrue = ref(false)
-const isError = ref(false)
-const disabled = ref(false)
-const loading = ref(false)
-const changeSliderFont = file_front => {
-
-
-  const fileReader = new FileReader()
-  const { files } = file_front.target
-  if (files && files.length) {
-    fileReader.readAsDataURL(files[0])
-    fileReader.onload = () => {
-      if (typeof fileReader.result === 'string')
-        avatar.value = fileReader.result
-    }
-  }
-}
 </script>
 
 <template>
-  <VRow >
+  <VRow>
     <VSnackbar location="top" v-model="isTrue">
-      {{$t('Done')}}
+      {{ $t('Done') }}
 
       <template #actions>
         <VBtn
           color="success"
           @click="isTrue = false"
         >
-          {{$t('Close')}}
+          {{ $t('Close') }}
         </VBtn>
       </template>
     </VSnackbar>
@@ -167,24 +149,11 @@ const changeSliderFont = file_front => {
           @click="isError = false"
 
         >
-          {{$t('Close')}}
+          {{ $t('Close') }}
         </VBtn>
       </template>
     </VSnackbar>
-    <VCol v-show="false" v-if="errors" cols="12">
 
-      <!-- 👉 Colors -->
-      <VCard :title="$t('Site_Settings')">
-
-        <VCardText class="d-flex">
-
-          <VAlert color="error">
-            {{ errors }}
-          </VAlert>
-
-        </VCardText>
-      </VCard>
-    </VCol>
 
     <VCol cols="12">
       <VCard :title="$t('AddNew')">
@@ -195,98 +164,25 @@ const changeSliderFont = file_front => {
           <!-- 👉 Form -->
           <VForm ref="refForm" class="mt-6">
             <VRow>
-              <VCol
-                md="12"
-                cols="12"
-              >
-              <VCardText class="d-flex">
-                <!-- 👉 Avatar -->
-                <VAvatar
-                  rounded
-                  size="100"
-                  class="me-6"
-                  :image="avatar"
-                />
 
-                <!-- 👉 Upload Photo -->
-                <form
-                  ref="refForm_front"
-                  class="d-flex flex-column justify-center gap-4"
-                >
-                  <div class="d-flex flex-wrap gap-2">
-                    <VBtn
-                      color="primary"
-                      @click="refInputEl_front?.click()"
-                    >
-                      <VIcon
-                        icon="tabler-cloud-upload"
-                        class="d-sm-none"
-                      />
-                      <span class="d-none d-sm-block">{{ $t('slider_back_img') }}</span>
-                    </VBtn>
-
-                    <input
-                      ref="refInputEl_front"
-                      type="file"
-                      name="file_back"
-                      accept=".jpeg,.png,.jpg,GIF"
-                      hidden
-                      @input="changeSliderFont"
-                    >
-
-
-                  </div>
-
-                  <p class="text-body-1 mb-0">
-                    Allowed JPG, GIF or PNG. Max size of 800K
-                  </p>
-                </form>
-              </VCardText>
-              </VCol>
               <VCol
                 md="6"
                 cols="12"
               >
                 <VTextField
-                  v-model="Full_name"
-                  :label="$t('Full_name')"
+                  v-model="title_ar"
+                  :label="$t('title_ar')"
                   :rules="[required]"
                 />
               </VCol>
               <VCol
-                cols="12"
                 md="6"
+                cols="12"
               >
                 <VTextField
-                  v-model="email"
-                  :label="$t('email')"
-                  :rules="[required, emailValidator]"
-                />
-              </VCol>
-              <VCol
-                md="6"
-                cols="12"
-              >
-                <VSelect
-                  v-model="selectedRole"
-                  :label="$t('Select Role')"
-                  :items="roles"
-                  clearable
-                  clear-icon="tabler-x"
-                />
-              </VCol>
-
-
-
-
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="mobile"
-                  :label="$t('mobile')"
-                  :rules="[required, regexValidator(matchRegularEx, '^([0-9]+)$')]"
+                  v-model="title_en"
+                  :label="$t('title_en')"
+                  :rules="[required]"
                 />
               </VCol>
               <VCol
@@ -301,36 +197,26 @@ const changeSliderFont = file_front => {
                   clear-icon="tabler-x"
                 />
               </VCol>
-
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="password"
-                  :label="$t('password')"
-                  type="password"
-                  :rules="[required]"
-                  autocomplete="on"
-                />
+              <VCol cols="12">
+                <VCard :title="$t('roles')">
+                  <VCardText class="pt-0">
+                    <div class="demo-space-x">
+                      <VCheckbox
+                        v-model="selectedCheckbox"
+                        :label="t('all')"
+                        :value="0"
+                      />
+                      <VCheckbox
+                        v-for="role in rolesData"
+                        :key="role.id"
+                        v-model="selectedCheckbox"
+                        :label="role.title"
+                        :value="role.slug"
+                      />
+                    </div>
+                  </VCardText>
+                </VCard>
               </VCol>
-
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="repeatPassword"
-                  :label="$t('password_confirm')"
-                  type="password"
-                  :rules="[required, confirmedValidator(repeatPassword, password)]"
-                  autocomplete="on"
-                />
-              </VCol>
-
-
-
-
 
               <VCol cols="12">
                 <VBtn
@@ -341,7 +227,10 @@ const changeSliderFont = file_front => {
                 >{{ $t('Save changes') }}
                 </VBtn>
               </VCol>
+
+
             </VRow>
+
           </VForm>
         </VCardText>
       </VCard>
@@ -353,4 +242,6 @@ const changeSliderFont = file_front => {
 <route lang="yaml">
 meta:
  layout: default_admin
+ action: read
+ subject: permissions_add
 </route>

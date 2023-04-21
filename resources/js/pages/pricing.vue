@@ -1,120 +1,87 @@
 <script setup>
 import laptopGirl from '@images/illustrations/laptop-girl.png'
+import NavBarI18n from "@/layouts/components/NavBarI18n.vue"
+import { useI18n } from "vue-i18n"
+import axios from "@axios"
+import { useRoute } from "vue-router"
+import PlanPricing from "@core/components/PlanPricing.vue"
+import { useThemeConfig } from "@core/composable/useThemeConfig"
+const dir_h1 = ref('')
+const { isAppRtl } = useThemeConfig()
+let token = localStorage.getItem('accessToken')
+axios.defaults.headers.common['Content-Type'] = 'application/json'
+axios.defaults.headers.common['Accept'] = 'application/json'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+  dir_h1.value='text-left'
+}
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+  dir_h1.value='text-left'
+}
 
-const features = [
-  {
-    feature: '14-days free trial',
-    basic: true,
-    standard: true,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: false,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'No user limit',
-    basic: false,
-    standard: false,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: false,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'Product Support',
-    basic: false,
-    standard: true,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: false,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'Email Support',
-    basic: false,
-    standard: false,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: true,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'Integrations',
-    basic: false,
-    standard: true,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: false,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'Removal of Front branding',
-    basic: false,
-    standard: false,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: true,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'Active maintenance & support',
-    basic: false,
-    standard: false,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: false,
-      enterprise: false,
-    },
-  },
-  {
-    feature: 'Data storage for 365 days',
-    basic: false,
-    standard: false,
-    enterprise: true,
-    addOnAvailable: {
-      starter: false,
-      pro: false,
-      enterprise: false,
-    },
-  },
-]
+axios.defaults.headers.common['type'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'token ' + token
+const route = useRoute()
+const router = useRouter()
+const { t } = useI18n()
+const isTrue = ref(false)
+const isError = ref(false)
+const disabled = ref(false)
+const loading = ref(false)
 
-const faqs = [
-  {
-    question: 'What counts towards the 100 responses limit?',
-    answer: 'Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar diam eros in elit. Pellentesque convallis laoreet laoreet.Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar diam eros in elit. Pellentesque convallis laoreet laoreet.',
-  },
-  {
-    question: 'How do you process payments?',
-    answer: 'We accept Visa®, MasterCard®, American Express®, and PayPal®. So you can be confident that your credit card information will be kept safe and secure.',
-  },
-  {
-    question: 'What payment methods do you accept?',
-    answer: '2Checkout accepts all types of credit and debit cards.',
-  },
-  {
-    question: 'Do you have a money-back guarantee?',
-    answer: 'Yes. You may request a refund within 30 days of your purchase without any additional explanations.',
-  },
-]
+
+const faqs = ref({})
+
+const fetchFaqData = () => {
+
+
+  axios.get('/faqs/home/list', { token })
+    .then(response => {
+      console.log(response.data,'dd')
+      for (var i = 0; i < response.data.length; i++) {
+
+        faqs.value[i] = { question: response.data[i].title, answer: response.data[i].description}
+      }
+
+    })
+
+
+}
+
+watch(router, fetchFaqData, { immediate: true })
+
+const home_click = ()  => {
+  document.location.href = '/'
+}
 </script>
 
 <template>
   <VCard class="pt-6">
+
+      <VRow>
+
+        <VCol
+          cols="6"
+          class="mx-auto"
+        >
+          <NavBarI18n/>
+        </VCol>
+        <VCol
+          cols="6"
+          md="6"
+          class="text-center"
+          :class="dir_h1"
+        >
+          <a @click="home_click" href="#"><h1 class="text-primary-user">Resturentlly</h1></a>
+        </VCol>
+      </VRow>
+
+
     <VCardText class="pt-12 mb-16 pb-16">
+
       <!-- 👉 App Pricing components -->
       <VRow>
         <VCol
@@ -124,7 +91,7 @@ const faqs = [
           lg="10"
           class="mx-auto"
         >
-          <AppPricing md="4" />
+          <PlanPricing :plan-data="features" md="4"/>
         </VCol>
       </VRow>
     </VCardText>
@@ -138,14 +105,14 @@ const faqs = [
       >
         <div class="text-center text-md-start py-10 px-10 px-sm-0">
           <h3 class="text-h5 text-primary mb-2">
-            Still not convinced? Start with a 14-day FREE trial!
+            {{t('Still not convinced? Start with a FREE trial!')}}
           </h3>
           <p class="text-sm">
-            You will get full access to all the features for 14 days.
+            {{t('You will get full access to all the features for 14 days.')}}
           </p>
 
           <VBtn class="mt-4">
-            Start-14-day FREE trial
+           {{t('Start-14-day FREE trial')}}
           </VBtn>
         </div>
 
@@ -159,203 +126,20 @@ const faqs = [
     </VRow>
 
     <!-- 👉 Plans -->
-    <VCardText class="text-center mt-16">
-      <h4 class="text-h4 mb-2">
-        Pick a plan that works best for you
-      </h4>
-      <p>Stay cool, we have a 48-hour money back guarantee!</p>
-    </VCardText>
+
 
     <!-- 👉 Features & Tables -->
-    <VCardText class="mb-16 mt-2">
-      <VRow>
-        <VCol
-          cols="12"
-          md="10"
-          class="mx-auto"
-        >
-          <VTable class="text-no-wrap border rounded">
-            <!-- 👉 Table head -->
-            <thead>
-              <tr>
-                <th
-                  scope="col"
-                  class="py-4"
-                >
-                  <h6 class="text-sm font-weight-semibold mb-1">
-                    FEATURES
-                  </h6>
-                  <span class="font-weight-regular text-sm text-disabled">
-                    Native Front Features
-                  </span>
-                </th>
 
-                <th
-                  scope="col"
-                  class="text-center py-4"
-                >
-                  <h6 class="text-sm font-weight-semibold mb-1">
-                    BASIC
-                  </h6>
-                  <span class="text-disabled font-weight-regular text-sm">
-                    FREE
-                  </span>
-                </th>
-
-                <th
-                  scope="col"
-                  class="text-center py-4"
-                >
-                  <h6 class="text-sm font-weight-semibold mb-1">
-                    STANDARD
-                    <VAvatar
-                      size="22"
-                      color="primary"
-                      class="mt-n2"
-                    >
-                      <VIcon
-                        size="16"
-                        icon="tabler-star"
-                      />
-                    </VAvatar>
-                  </h6>
-
-                  <span class="text-disabled font-weight-regular text-sm">
-                    $7.5/MONTH
-                  </span>
-                </th>
-
-                <th
-                  scope="col"
-                  class="text-center py-4"
-                >
-                  <h6 class="text-sm font-weight-semibold mb-1">
-                    ENTERPRISE
-                  </h6>
-                  <span class="text-disabled font-weight-regular text-sm">
-                    $16/MONTH
-                  </span>
-                </th>
-              </tr>
-            </thead>
-
-            <!-- 👉 Table Body -->
-            <tbody>
-              <tr
-                v-for="feature in features"
-                :key="feature.feature"
-              >
-                <td>{{ feature.feature }}</td>
-                <td class="text-center">
-                  <VChip
-                    v-if="!feature.addOnAvailable.starter"
-                    pill
-                    size="30"
-                    class="pa-1"
-                    :color="feature.basic ? 'primary' : 'secondary'"
-                  >
-                    <VIcon
-                      size="15"
-                      :icon="feature.basic ? 'tabler-check' : 'tabler-x'"
-                    />
-                  </VChip>
-
-                  <VChip
-                    v-if="feature.addOnAvailable.starter"
-                    color="primary"
-                    size="small"
-                  >
-                    ADD-ON AVAILABLE
-                  </VChip>
-                </td>
-
-                <td class="text-center">
-                  <VChip
-                    v-if="!feature.addOnAvailable.pro"
-                    pill
-                    size="30"
-                    class="pa-1"
-                    :color="feature.standard ? 'primary' : 'secondary'"
-                  >
-                    <VIcon
-                      size="15"
-                      :icon="feature.standard ? 'tabler-check' : 'tabler-x'"
-                    />
-                  </VChip>
-
-                  <VChip
-                    v-if="feature.addOnAvailable.pro"
-                    color="primary"
-                    size="small"
-                    label
-                  >
-                    ADD-ON AVAILABLE
-                  </VChip>
-                </td>
-
-                <td class="text-center">
-                  <VChip
-                    v-if="!feature.addOnAvailable.enterprise"
-                    pill
-                    size="30"
-                    class="pa-1"
-                    :color="feature.enterprise ? 'primary' : 'secondary'"
-                  >
-                    <VIcon
-                      size="15"
-                      :icon="feature.enterprise ? 'tabler-check' : 'tabler-x'"
-                    />
-                  </VChip>
-
-                  <VChip
-                    v-if="feature.addOnAvailable.enterprise"
-                    color="primary"
-                    size="small"
-                  >
-                    ADD-ON AVAILABLE
-                  </VChip>
-                </td>
-              </tr>
-            </tbody>
-
-            <!-- 👉 Table footer -->
-            <tfoot>
-              <tr>
-                <td class="py-4">
-                  Data storage for 365 days
-                </td>
-
-                <td class="text-center py-4">
-                  <VBtn variant="tonal">
-                    Choose Plan
-                  </VBtn>
-                </td>
-                <td class="text-center py-4">
-                  <VBtn>
-                    Choose Plan
-                  </VBtn>
-                </td>
-                <td class="text-center py-4">
-                  <VBtn variant="tonal">
-                    Choose Plan
-                  </VBtn>
-                </td>
-              </tr>
-            </tfoot>
-          </VTable>
-        </VCol>
-      </VRow>
-    </VCardText>
 
     <!-- 👉 FAQ -->
     <div>
       <VCardText class="bg-var-theme-background py-16">
         <div class="text-center">
           <h4 class="text-h4 mb-2">
-            FAQ's
+           {{t('FAQS')}}
           </h4>
           <p>
-            Let us help answer the most common questions.
+            {{t('Let us help answer the most common questions.')}}
           </p>
         </div>
 
@@ -375,6 +159,9 @@ const faqs = [
 <route lang="yaml">
 meta:
  layout: blank
+ action: read
+ subject: Auth
+ redirectIfLoggedIn: true
 </route>
 
 <style lang="scss">
@@ -396,5 +183,11 @@ meta:
     position: relative;
     inset-block-end: -11px;
   }
+}
+.text-primary-user
+{
+
+  color: #FEA116 !important;
+
 }
 </style>

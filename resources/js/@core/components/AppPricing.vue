@@ -2,7 +2,10 @@
 import safeBoxWithGoldenCoin from '@images/misc/3d-safe-box-with-golden-dollar-coins.png'
 import spaceRocket from '@images/misc/3d-space-rocket-with-smoke.png'
 import dollarCoinPiggyBank from '@images/misc/dollar-coins-flying-pink-piggy-bank.png'
-
+import { useAdminListStore } from "@/views/apps/admin/useAdminListStore"
+import { useI18n } from "vue-i18n"
+const { t } = useI18n()
+const userListStore = useAdminListStore()
 const props = defineProps({
   xs: {
     type: [
@@ -93,6 +96,19 @@ const pricingPlans = [
     ],
   },
 ]
+
+const fetchPlans = () => {
+  userListStore.fetchPlans({}).then(response => {
+
+    pricingPlans.value = response.data.data
+
+
+  }).catch(error => {
+    console.error(error)
+  })
+}
+
+watchEffect(fetchPlans)
 </script>
 
 <template>

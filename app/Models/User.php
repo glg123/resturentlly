@@ -19,11 +19,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'api_token',
         'role',
+        'type',
+        'avatar',
+        'mobile',
+        'manager_id',
     ];
 
     /**
@@ -59,6 +64,30 @@ class User extends Authenticatable
 
 
         ];
+
+    }
+
+    public function Restaurants_Owner()
+    {
+        return $this->hasMany(Restaurant::class, 'owner_id')->where('role','manager');
+    }
+    public function Restaurants_Maneger()
+    {
+        return $this->hasOne(Restaurant::class, 'manager_id')->where('role','staff');
+    }
+    public function Userabilitie()
+    {
+        return $this->hasOne(UserRole::class, 'id','user_role_id',);
+    }
+    public function getAvatarAttribute($value)
+    {
+
+        if ($value) {
+
+
+            return \Storage::disk('Admin')->url($value);
+        }
+        return $value;
 
     }
 }

@@ -4,6 +4,8 @@ import AddNewUserDrawer from '@/views/apps/user/list/AddNewUserDrawer.vue'
 import { avatarText } from '@core/utils/formatters'
 import { useAdminListStore } from "@/views/apps/admin/useAdminListStore"
 import { useI18n } from "vue-i18n"
+import axios from "@axios"
+
 const { t } = useI18n()
 const userListStore = useAdminListStore()
 const searchQuery = ref('')
@@ -19,14 +21,20 @@ const admins_active = ref(1)
 const admins_count = ref(1)
 const admins_not_active = ref(1)
 const admins_block = ref(1)
-
+const router = useRouter()
+let token = localStorage.getItem('accessToken')
+axios.defaults.headers.common['Content-Type'] = 'application/json'
+axios.defaults.headers.common['Accept'] = 'application/json'
+axios.defaults.headers.common['Language'] = 'ar'
+axios.defaults.headers.common['type'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'token ' + token
 // 👉 Fetching users
 const fetchUsers = () => {
   userListStore.fetchUsers({
     q: searchQuery.value,
     status: selectedStatus.value,
     plan: selectedPlan.value,
-    role: selectedRole.value,
+    admin_role_id: selectedRole.value,
     perPage: rowPerPage.value,
     page: currentPage.value,
   }).then(response => {
@@ -52,25 +60,8 @@ watchEffect(() => {
 })
 
 // 👉 search filters
-const roles = [
-  {
-    title: t('admin'),
-    value: 'admin',
-  },
-  {
-    title:  t('editor'),
-    value: 'editor',
-  },
-  {
-    title:  t('maintainer'),
-    value: 'maintainer',
-  },
-  {
-    title:  t('subscriber'),
-    value: 'subscriber',
-  },
-]
 
+const roles = ref([])
 
 const status = [
   {
@@ -87,38 +78,7 @@ const status = [
   },
 ]
 
-const resolveUserRoleVariant = role => {
-  if (role === 'subscriber')
-    return {
-      color: 'warning',
-      icon: 'tabler-user',
-    }
-  if (role === 'author')
-    return {
-      color: 'success',
-      icon: 'tabler-circle-check',
-    }
-  if (role === 'maintainer')
-    return {
-      color: 'primary',
-      icon: 'tabler-chart-pie-2',
-    }
-  if (role === 'editor')
-    return {
-      color: 'info',
-      icon: 'tabler-pencil',
-    }
-  if (role === 'admin')
-    return {
-      color: 'secondary',
-      icon: 'tabler-device-laptop',
-    }
 
-  return {
-    color: 'primary',
-    icon: 'tabler-user',
-  }
-}
 
 const resolveUserStatusVariant = stat => {
   if (stat === 'pending')
@@ -189,6 +149,34 @@ const userListMeta = [
     subtitle: t('block_user'),
   },
 ]
+
+const user = {
+  action: 'read',
+
+  // `subject` property type is `Subjects` ("src/plugins/casl/AppAbility.ts")
+  subject: 'admins_add',
+}
+
+const fetchProjectData = () => {
+
+
+  axios.get('/roles/list', { token })
+    .then(response => {
+
+      for (var i=0 ; i< response.data.length;i++)
+      {
+        console.log(response.data[i].id, 'res')
+        console.log(response.data[i].role_name, 'res')
+        roles.value[i]={ title: response.data[i].role_name, value: response.data[i].id }
+      }
+      console.log(roles.value, 'res')
+
+    })
+
+
+}
+
+watch(router, fetchProjectData, { immediate: true })
 </script>
 
 <template>
@@ -295,8 +283,7 @@ const userListMeta = [
               </VBtn>
 
               <!-- 👉 Add user button -->
-              <VBtn>
-
+              <VBtn  v-if="$can(user.action, user.subject)">
                 <RouterLink
                   :to="{ name: 'admin-apps-admins-add-add_new'}"
                   class="font-weight-medium user-list-name"
@@ -340,7 +327,6 @@ const userListMeta = [
                   <div class="d-flex align-center">
                     <VAvatar
                       variant="tonal"
-                      :color="resolveUserRoleVariant(user.role).color"
                       class="me-3"
                       size="38"
                     >
@@ -368,8 +354,8 @@ const userListMeta = [
                 <!-- 👉 Role -->
                 <td>
                   <VAvatar
-                    :color="resolveUserRoleVariant(user.role).color"
-                    :icon="resolveUserRoleVariant(user.role).icon"
+                    color="secondary"
+                    icon="tabler-device-laptop"
                     variant="tonal"
                     size="30"
                     class="me-4"
@@ -471,6 +457,8 @@ const userListMeta = [
 <route lang="yaml">
 meta:
  layout: default_admin
+ action: read
+ subject: admins_list
 </route>
 
 

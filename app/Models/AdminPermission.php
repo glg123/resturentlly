@@ -11,6 +11,7 @@ class AdminPermission extends Model
 
     use SoftDeletes;
 
+    protected $table='admins_permissions';
 
     /**
      * The attributes that are guarded from  mass assignable.
@@ -30,6 +31,7 @@ class AdminPermission extends Model
         'updated_at' => 'datetime:Y-m-d h:i:s',
         'deleted_at' => 'datetime:Y-m-d h:i:s',
 
+
     ];
 
     /**
@@ -40,13 +42,12 @@ class AdminPermission extends Model
     protected $fillable = [
         'title_ar',
         'title_en',
-        'description_ar',
-        'description_en',
+        'slug',
         'status',
 
 
     ];
-    protected $appends = ['title', 'description'];
+    protected $appends = ['title'];
 
     public function getTitleAttribute()
     {
@@ -60,16 +61,6 @@ class AdminPermission extends Model
         return $this->$colum_name;
     }
 
-    public function getDescriptionAttribute()
-    {
-        $locale = 'ar';
-        if (app()->getLocale()) {
-            $locale =app()->getLocale();
 
-        }
-
-        $colum_name = 'description_' . $locale;
-        return $this->$colum_name;
-    }
 
 }

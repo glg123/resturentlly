@@ -71,7 +71,7 @@ const resetForm = () => {
 
 const sendFrom = () => {
 
-  refForm.value?.validate().then(({valid: isValid}) => {
+  refForm.value?.validate().then(({ valid: isValid }) => {
     console.log(isValid)
     if (isValid) {
       loading.value = true

@@ -42,7 +42,7 @@ export default defineConfig({
     Pages({
       dirs: ['./resources/js/pages'],
 
-      // ℹ️ We need three routes using single routes so we will ignore generating route for this SFC file
+      // ℹ️ We need three routes using single routes, so we will ignore generating route for this SFC file
       onRoutesGenerated: routes => [
         // Email filter
         {

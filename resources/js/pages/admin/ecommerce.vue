@@ -123,8 +123,10 @@ import EcommerceTransactions from '@/views/dashboards/ecommerce/EcommerceTransac
 </template>
 
 <route lang="yaml">
- meta:
-  layout: default_admin
+meta:
+ layout: default_admin
+ action: read
+ subject: ecommerce
 </route>
 
 <style lang="scss">

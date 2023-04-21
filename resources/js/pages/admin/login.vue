@@ -19,8 +19,8 @@ import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustratio
 import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import Default from "@/layouts/default.vue";
-
+import Default from "@/layouts/default.vue"
+import VueCookies from "vue-cookies"
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 const isPasswordVisible = ref(false)
@@ -50,7 +50,7 @@ const login = () => {
     ability.update(userAbilities)
     localStorage.setItem('userData', JSON.stringify(userData))
     localStorage.setItem('accessToken', accessToken)
-
+    VueCookies.set('auth', accessToken)
     // Redirect to `to` query if exist or redirect to index route
     router.replace(route.query.to ? String(route.query.to) : '/admin/')
   }).catch(e => {
@@ -67,11 +67,30 @@ const onSubmit = () => {
       login()
   })
 }
+const home_click = ()  => {
+  document.location.href = '/'
+}
 </script>
 
 <template>
   <div>
-    <NavBarI18n/>
+    <VRow>
+
+      <VCol
+        cols="6"
+        class="mx-auto"
+      >
+        <NavBarI18n/>
+      </VCol>
+      <VCol
+        cols="6"
+        md="6"
+        class="text-center"
+        :class="dir_h1"
+      >
+        <a @click="home_click" href="#"><h1 class="text-primary-user">Resturentlly</h1></a>
+      </VCol>
+    </VRow>
     <VRow
       no-gutters
       class="auth-wrapper"
@@ -203,6 +222,12 @@ const onSubmit = () => {
 
 <style lang="scss">
 @use "@core-scss/template/pages/page-auth.scss";
+.text-primary-user
+{
+
+  color: #FEA116 !important;
+
+}
 </style>
 
 <route lang="yaml">

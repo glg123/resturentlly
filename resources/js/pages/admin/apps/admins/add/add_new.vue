@@ -32,6 +32,7 @@ const required = val => {
   }
 
 }
+const errors = ref('')
 const sendFrom = () => {
 
 
@@ -47,7 +48,7 @@ const sendFrom = () => {
         mobile: mobile.value,
         password: password.value,
         email: email.value,
-        role: selectedRole.value,
+        admin_role_id: selectedRole.value,
         status: selectedStatus.value,
         avatar: avatar.value,
         token,
@@ -67,11 +68,7 @@ const sendFrom = () => {
         disabled.value = false
       })
     } else {
-      /*  setInterval( () => {
-          const el = document.querySelector(".test")
 
-          el.scrollIntoView()
-        }, 1000)*/
     }
 
 
@@ -91,25 +88,8 @@ const selectedRole = ref()
 const selectedStatus = ref()
 const avatar = ref()
 const { t } = useI18n()
+const roles = ref([])
 
-const roles = [
-  {
-    title: t('admin'),
-    value: 'admin',
-  },
-  {
-    title:  t('editor'),
-    value: 'editor',
-  },
-  {
-    title:  t('maintainer'),
-    value: 'maintainer',
-  },
-  {
-    title:  t('subscriber'),
-    value: 'subscriber',
-  },
-]
 const status = [
   {
     title: t('block'),
@@ -142,10 +122,31 @@ const changeSliderFont = file_front => {
     }
   }
 }
+
+const fetchProjectData = () => {
+
+
+  axios.get('/roles/list', { token })
+    .then(response => {
+
+      for (var i=0 ; i< response.data.length;i++)
+      {
+        console.log(response.data[i].id, 'res')
+        console.log(response.data[i].role_name, 'res')
+        roles.value[i]={ title: response.data[i].role_name, value: response.data[i].id }
+      }
+      console.log(roles.value, 'res')
+
+    })
+
+
+}
+
+watch(router, fetchProjectData, { immediate: true })
 </script>
 
 <template>
-  <VRow >
+  <VRow>
     <VSnackbar location="top" v-model="isTrue">
       {{$t('Done')}}
 
@@ -171,20 +172,7 @@ const changeSliderFont = file_front => {
         </VBtn>
       </template>
     </VSnackbar>
-    <VCol v-show="false" v-if="errors" cols="12">
 
-      <!-- 👉 Colors -->
-      <VCard :title="$t('Site_Settings')">
-
-        <VCardText class="d-flex">
-
-          <VAlert color="error">
-            {{ errors }}
-          </VAlert>
-
-        </VCardText>
-      </VCard>
-    </VCol>
 
     <VCol cols="12">
       <VCard :title="$t('AddNew')">
@@ -353,4 +341,6 @@ const changeSliderFont = file_front => {
 <route lang="yaml">
 meta:
  layout: default_admin
+ action: read
+ subject: admins_add
 </route>

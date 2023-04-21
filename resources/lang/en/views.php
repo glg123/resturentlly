@@ -3,6 +3,8 @@
 return [
     'email'           => 'Email',
     'login'          => 'Login',
+    'logout'          => 'Logout',
+    'my_profile'          => 'My Profile',
     'Full Name'          => 'Full Name',
     'Testimonial'          => 'Testimonial',
     'Client Name'          => 'Client Name',

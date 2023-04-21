@@ -1,15 +1,16 @@
 <script setup>
-import { useUserListStore } from '@/views/apps/user/useUserListStore'
-import UserBioPanel from '@/views/apps/user/view/UserBioPanel.vue'
-import UserTabBillingsPlans from '@/views/apps/user/view/UserTabBillingsPlans.vue'
-import UserTabConnections from '@/views/apps/user/view/UserTabConnections.vue'
-import UserTabNotifications from '@/views/apps/user/view/UserTabNotifications.vue'
-import UserTabOverview from '@/views/apps/user/view/UserTabOverview.vue'
-import UserTabSecurity from '@/views/apps/user/view/UserTabSecurity.vue'
+import { useRestListStore } from '@/views/apps/restaurant/useRestListStore'
+import RestBioPanel from '@/views/apps/restaurant/view/RestBioPanel.vue'
+import UserTabBillingsPlans from '@/views/apps/restaurant/view/UserTabBillingsPlans.vue'
+import UserTabConnections from '@/views/apps/restaurant/view/UserTabConnections.vue'
+import UserTabNotifications from '@/views/apps/restaurant/view/UserTabNotifications.vue'
+import RestTabOverview from "@/views/apps/restaurant/view/RestTabOverview.vue"
+import RestTabInfo from "@/views/apps/restaurant/view/RestTabInfo.vue"
 
-const userListStore = useUserListStore()
+
+const restListStore = useRestListStore()
 const route = useRoute()
-const userData = ref()
+const restData = ref()
 const userTab = ref(null)
 
 const tabs = [
@@ -19,7 +20,7 @@ const tabs = [
   },
   {
     icon: 'tabler-lock',
-    title: 'Security',
+    title: 'General_Settings',
   },
   {
     icon: 'tabler-currency-dollar',
@@ -27,7 +28,7 @@ const tabs = [
   },
   {
     icon: 'tabler-bell',
-    title: 'Notifications',
+    title: 'Main_Settings',
   },
   {
     icon: 'tabler-link',
@@ -35,25 +36,31 @@ const tabs = [
   },
 ]
 
-userListStore.fetchUser(Number(route.params.id)).then(response => {
-  userData.value = response.data
+
+
+restListStore.SingleRest(Number(route.params.id)).then(response => {
+  restData.value = response.data
+
+
+
+
 })
 </script>
 
 <template>
-  <VRow v-if="userData">
+  <VRow v-if="restData">
     <VCol
       cols="12"
-      md="5"
-      lg="4"
+      md="4"
+      lg="5"
     >
-      <UserBioPanel :user-data="userData" />
+      <RestBioPanel :rest-data="restData"/>
     </VCol>
 
     <VCol
       cols="12"
-      md="7"
-      lg="8"
+      md="6"
+      lg="7"
     >
       <VTabs
         v-model="userTab"
@@ -78,25 +85,36 @@ userListStore.fetchUser(Number(route.params.id)).then(response => {
         :touch="false"
       >
         <VWindowItem>
-          <UserTabOverview />
+          <RestTabOverview
+            :rest-id="route.params.id"
+          />
         </VWindowItem>
 
         <VWindowItem>
-          <UserTabSecurity />
+          <RestTabInfo
+            :rest-id="route.params.id"
+          />
         </VWindowItem>
 
         <VWindowItem>
-          <UserTabBillingsPlans />
+          <UserTabBillingsPlans/>
         </VWindowItem>
 
         <VWindowItem>
-          <UserTabNotifications />
+          <UserTabNotifications/>
         </VWindowItem>
 
         <VWindowItem>
-          <UserTabConnections />
+          <UserTabConnections/>
         </VWindowItem>
       </VWindow>
     </VCol>
   </VRow>
 </template>
+
+<route lang="yaml">
+meta:
+ layout: default_admin
+ action: read
+ subject: restaurants_view
+</route>

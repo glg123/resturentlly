@@ -1,19 +1,24 @@
 <script setup>
 import { useAdminListStore } from "@/views/apps/admin/useAdminListStore"
 import { useI18n } from "vue-i18n"
-const { t } = useI18n()
 
+const { t } = useI18n()
+let isConfirmDialogOpen = ref(false)
 const userListStore = useAdminListStore()
 const searchQuery = ref('')
+const base_url = ref('delete/:id/roles/permissions')
 const selectedRole = ref()
+const idClick = ref()
+const renderComponent = ref(false)
 const selectedPlan = ref()
 const selectedStatus = ref()
 const rowPerPage = ref(1)
 const currentPage = ref(1)
 const totalPage = ref(1)
 const totalUsers = ref(0)
+const counter = ref(0)
 const roles = ref([])
-
+const router = useRouter()
 // 👉 Fetching users
 const fetchRoles = () => {
   userListStore.fetchRoles({
@@ -39,11 +44,31 @@ watchEffect(() => {
   if (currentPage.value > totalPage.value)
     currentPage.value = totalPage.value
 })
+const route = useRoute()
 
-// 👉 search filters
+const handleChildEvent = () => {
 
 
 
+    fetchRoles()
+
+
+
+}
+
+
+watch(() => counter.value, () => {
+  if(counter.value===10)
+  {
+  //  alert()
+    fetchRoles()
+  }
+  console.log(
+    "Watch props.selected function called with args:",
+    counter.value,
+
+  )
+})
 const status = [
   {
     title: t('active'),
@@ -80,7 +105,7 @@ const paginationData = computed(() => {
   const firstIndex = roles.value.length ? (currentPage.value - 1) * rowPerPage.value + 1 : 0
   const lastIndex = roles.value.length + (currentPage.value - 1) * rowPerPage.value
 
-  return ` ${ t("Showing") } ${ firstIndex } ${ t("to") } ${ lastIndex } ${ t("of") } ${ totalUsers.value } ${ t("entries") }`
+  return ` ${t("Showing")} ${firstIndex} ${t("to")} ${lastIndex} ${t("of")} ${totalUsers.value} ${t("entries")}`
 })
 
 const addNewUser = userData => {
@@ -90,7 +115,17 @@ const addNewUser = userData => {
   fetchRoles()
 }
 
-// 👉 List
+const user = {
+  action: 'read',
+
+  // `subject` property type is `Subjects` ("src/plugins/casl/AppAbility.ts")
+  subject: 'permissions_add',
+}
+
+const deleteDialog = id => {
+  isConfirmDialogOpen.value = true
+  idClick.value = id
+}
 </script>
 
 <template>
@@ -121,7 +156,7 @@ const addNewUser = userData => {
             </VRow>
           </VCardText>
 
-          <VDivider />
+          <VDivider/>
 
           <VCardText class="d-flex flex-wrap py-4 gap-4">
             <div
@@ -136,7 +171,7 @@ const addNewUser = userData => {
               />
             </div>
 
-            <VSpacer />
+            <VSpacer/>
 
             <div class="app-user-search-filter d-flex align-center flex-wrap gap-4">
               <!-- 👉 Search  -->
@@ -158,10 +193,10 @@ const addNewUser = userData => {
               </VBtn>
 
               <!-- 👉 Add user button -->
-              <VBtn>
+              <VBtn v-if="$can(user.action, user.subject)">
 
                 <RouterLink
-                  :to="{ name: 'admin-apps-admins-add-add_new'}"
+                  :to="{ name: 'admin-apps-permission-add-add_new'}"
                   class="font-weight-medium user-list-name"
                 >
                   {{ $t('AddNew') }}
@@ -171,104 +206,105 @@ const addNewUser = userData => {
             </div>
           </VCardText>
 
-          <VDivider />
+          <VDivider/>
 
-          <VTable class="text-no-wrap">
+          <VTable  class="text-no-wrap">
             <!-- 👉 table head -->
             <thead>
-              <tr>
-                <th scope="col">
-                  {{$t('role_name')}}
-                </th>
-                <th scope="col">
-                  {{$t('status')}}
-                </th>
-                <th scope="col">
-                  {{ $t('action') }}
-                </th>
-              </tr>
+            <tr>
+              <th scope="col">
+                {{ $t('role_name') }}
+              </th>
+              <th scope="col">
+                {{ $t('status') }}
+              </th>
+              <th scope="col">
+                {{ $t('action') }}
+              </th>
+            </tr>
             </thead>
             <!-- 👉 table body -->
             <tbody>
-              <tr
-                v-for="role in roles"
-                :key="role.id"
-                style="height: 3.75rem;"
-              >
-                <!-- 👉 User -->
+            <tr
+              v-for="role in roles"
+              :key="role.id"
+              style="height: 3.75rem;"
+            >
+              <!-- 👉 User -->
 
 
-                <!-- 👉 Role -->
+              <!-- 👉 Role -->
 
-                <td>
+              <td>
 
-                    {{ $t(role.role_name)  }}
+                {{ $t(role.role_name) }}
 
-                </td>
+              </td>
 
-                <!-- 👉 Status -->
-                <td>
-                  <VChip
-                    label
-                    :color="resolveUserStatusVariant(role.status)"
-                    size="small"
-                    class="text-capitalize"
-                  >
-                    {{ $t(role.status)  }}
-                  </VChip>
-                </td>
-
-                <!-- 👉 Actions -->
-                <td
-                  class="text-center"
-                  style="width: 5rem;"
+              <!-- 👉 Status -->
+              <td>
+                <VChip
+                  label
+                  :color="resolveUserStatusVariant(role.status)"
+                  size="small"
+                  class="text-capitalize"
                 >
-                  <VBtn
-                    icon
-                    size="x-small"
-                    color="default"
-                    variant="text"
-                    :to="{ name: 'admin-apps-admins-view-id', params: { id: role.id } }"
-                  >
-                    <VIcon
-                      size="22"
-                      icon="tabler-edit"
-                    />
+                  {{ $t(role.status) }}
+                </VChip>
+              </td>
 
-                  </VBtn>
+              <!-- 👉 Actions -->
+              <td
+                class="text-center"
+                style="width: 5rem;"
+              >
+                <VBtn
+                  icon
+                  size="x-small"
+                  color="default"
+                  variant="text"
+                  :to="{ name: 'admin-apps-permission-view-id', params: { id: role.id } }"
+                >
+                  <VIcon
+                    size="22"
+                    icon="tabler-edit"
+                  />
 
-                  <VBtn
-                    icon
-                    size="x-small"
-                    color="default"
-                    variant="text"
-                    :to="{ name: 'admin-apps-admins-view-id', params: { id: role.id } }"
-                  >
-                    <VIcon
-                      size="22"
-                      icon="tabler-trash"
-                    />
-                  </VBtn>
+                </VBtn>
+
+                <VBtn
+                  icon
+                  size="x-small"
+                  color="default"
+                  variant="text"
+                  @click="deleteDialog(role.id )"
+
+                >
+                  <VIcon
+                    size="22"
+                    icon="tabler-trash"
+                  />
+                </VBtn>
 
 
-                </td>
-              </tr>
+              </td>
+            </tr>
             </tbody>
 
             <!-- 👉 table footer  -->
             <tfoot v-show="!roles.length">
-              <tr>
-                <td
-                  colspan="7"
-                  class="text-center"
-                >
-                 {{$t('No data available')}}
-                </td>
-              </tr>
+            <tr>
+              <td
+                colspan="7"
+                class="text-center"
+              >
+                {{ $t('No data available') }}
+              </td>
+            </tr>
             </tfoot>
           </VTable>
 
-          <VDivider />
+          <VDivider/>
 
           <VCardText class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5">
             <span class="text-sm text-disabled">
@@ -287,6 +323,14 @@ const addNewUser = userData => {
     </VRow>
 
     <!-- 👉 Add New User -->
+    <DeleteDialog
+      v-model:counter="counter"
+      v-model:isDialogVisible="isConfirmDialogOpen"
+      v-model:id="idClick"
+      v-model:base_url="base_url"
+      v-model:confirm="handleChildEvent"
+      :confirmation-msg="t('Are you sure you want to deactivate your account?')"
+    />
 
 
 
@@ -295,7 +339,9 @@ const addNewUser = userData => {
 
 <route lang="yaml">
 meta:
- layout: default_admin
+layout: default_admin
+action: read
+subject: permissions_list
 </route>
 
 

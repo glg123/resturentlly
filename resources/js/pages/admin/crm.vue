@@ -156,6 +156,8 @@ const simpleStatisticsDemoCards = [
 </template>
 
 <route lang="yaml">
- meta:
-  layout: default_admin
+meta:
+ layout: default_admin
+ action: read
+ subject: crm
 </route>

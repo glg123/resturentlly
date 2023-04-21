@@ -172,5 +172,5 @@ const statisticsVertical = {
 meta:
  layout: default_admin
  action: read
- subject: Auth
+ subject: analytics
 </route>

@@ -5,15 +5,21 @@ export default [
     children: [
       {
         title: 'Analytics',
-        to: 'dashboards-analytics',
+        to: 'admin-analytics',
+        action: 'read',
+        subject: 'analytics',
       },
       {
         title: 'eCommerce',
-        to: 'dashboards-ecommerce',
+        to: 'admin-ecommerce',
+        action: 'read',
+        subject: 'ecommerce',
       },
       {
         title: 'CRM',
-        to: 'dashboards-crm',
+        to: 'admin-crm',
+        action: 'read',
+        subject: 'crm',
       },
     ],
     //badgeContent: '2',

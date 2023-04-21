@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Adminabilitie;
 use Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -103,18 +104,17 @@ class AuthController extends Controller
 
         $class = new \App\Models\Admin();
 
-        $user = $class::where($username_column, $credentials[$username_column])->first();
+        $admin = $class::where($username_column, $credentials[$username_column])->first();
 
 
-        if (!$user && $email) { //  TODO remove later after 2019-12-30
+        if (!$admin && $email) { //  TODO remove later after 2019-12-30
 
 
             //$user = $class::where($username_column, $old_mobile)->where('country_code', 966)->first();
-            $user = $class::where($username_column, $email)->first();
+            $admin = $class::where($username_column, $email)->first();
         }
 
-        if ((!$user) ||
-            (app('hash')->check($credentials['password'], $user->password) === false)) {
+        if ((!$admin) || (app('hash')->check($credentials['password'], $admin->password) === false)) {
             /*  return response([
                   'error' => [
                       'status'      => 422,
@@ -130,51 +130,92 @@ class AuthController extends Controller
         }
 
 
-        if ($user->api_token == null) {
-            $user->api_token = $user->createToken('api_token')->plainTextToken;
+        if ($admin->api_token == null) {
+            $admin->api_token = $admin->createToken('api_token')->plainTextToken;
 
 
         }
-        $user->device_token = $request->get('device_token');
+        $admin->device_token = $request->get('device_token');
         // $user->api_token = $user->createToken('api_token')->plainTextToken;
-        $user->save();
-        $user = $user->first();
+        $admin->save();
+        $admin = $admin->with('Adminabilitie.RolePermissions')->where('id', $admin->id)->first();
 
+       // dd($user->adminAbilities->abilities);
         $status = 200;
         $response = [
-            'userData' => $user->first(),
-            'accessToken' => $user->api_token,
-            'userAbilities' => $user->adminAbilities,
+            'userData' => $admin,
+            'accessToken' => $admin->api_token,
+            'userAbilities' => $admin->Adminabilitie->RolePermissions->abilities,
 
         ];
         return response()->json($response, $status);
-       // return JsonResponse::success("User Profile", $user);
+        // return JsonResponse::success("User Profile", $user);
         //  return ['data' => $user];
     }
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:50',
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-            'c_password' => 'required|same:password',
+        $rules = Validator::make($request->all(), [
+
+            'email' => 'required',
+            'password' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'type' => 'required',
+            'avatar' => 'required',
+
+
+
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+        if ($rules->fails()) {
+            return JsonResponse::fail($rules->errors()->first(), 400);
         }
 
-        $data = $request->only(['name', 'email', 'password']);
-        $data['password'] = bcrypt($data['password']);
-
-        $user = User::create($data);
-        $user->is_admin = 0;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $user->createToken('bigStore')->accessToken,
+        $request->merge([
+          'password' => bcrypt($request->get('password'))
         ]);
+        $user = User::create($request->only([
+            'first_name',
+            'last_name',
+            'email',
+            'role',
+            'type',
+            'mobile',
+            'manager_id',
+            'password',
+
+        ]));
+
+        $user = User::where('id', $user->id)->first();
+        if (preg_match('/^data:image\/(\w+);base64,/', $request->get('avatar'))) {
+            $data = substr($request->get('avatar'), strpos($request->get('avatar'), ',') + 1);
+            $data = base64_decode($data);
+            $image_info = getimagesize($request->get('avatar'));
+
+            $extension = (isset($image_info["mime"]) ? explode('/', $image_info["mime"])[1] : "");
+            $safeName = str_random(10) . '.' . $extension;
+            Storage::disk('User')->put($safeName, $data);
+            $user->avatar = 'storage/users/' . $safeName;
+            $user->save();
+            return response()->json($user);
+        }
+        $user = User::where('id', $user->id)->first();
+        $user->api_token = $user->createToken('api_token')->plainTextToken;
+        $user->save();
+        $user = $user->with('Userabilitie.UserRolePermissions')->where('id', $user->id)->first();
+
+        $status = 200;
+        $response = [
+            'userData' => $user,
+            'accessToken' => $user->api_token,
+            'userAbilities' => $user->Userabilitie->UserRolePermissions->abilities,
+
+
+        ];
+        return response()->json($response, $status);
+        return response()->json($user);
+
     }
 
     public function show(User $user)

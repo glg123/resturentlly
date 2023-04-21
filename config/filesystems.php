@@ -68,6 +68,18 @@ return [
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],
+        'Rest' => [
+            'driver' => 'local',
+            'root' => public_path('storage/restaurants/'),
+            'url' => env('APP_URL'),
+            'visibility' => 'public',
+        ],
+        'Plan' => [
+            'driver' => 'local',
+            'root' => public_path('storage/plans/'),
+            'url' => env('APP_URL'),
+            'visibility' => 'public',
+        ],
 
     ],
 

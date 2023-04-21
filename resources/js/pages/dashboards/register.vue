@@ -74,11 +74,30 @@ const onSubmit = () => {
       register()
   })
 }
+const home_click = ()  => {
+  document.location.href = '/'
+}
 </script>
 
 <template>
   <div>
-    <NavBarI18n />
+    <VRow>
+
+      <VCol
+        cols="6"
+        class="mx-auto"
+      >
+        <NavBarI18n/>
+      </VCol>
+      <VCol
+        cols="6"
+        md="6"
+        class="text-center"
+        :class="dir_h1"
+      >
+        <a @click="home_click" href="#"><h1 class="text-primary-user">Resturentlly</h1></a>
+      </VCol>
+    </VRow>
 
     <VRow
       no-gutters
@@ -240,6 +259,12 @@ const onSubmit = () => {
 
 <style lang="scss">
 @use "@core-scss/template/pages/page-auth.scss";
+.text-primary-user
+{
+
+  color: #FEA116 !important;
+
+}
 </style>
 
 <route lang="yaml">

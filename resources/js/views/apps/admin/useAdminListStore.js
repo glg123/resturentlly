@@ -15,7 +15,11 @@ axios.defaults.headers.common['type'] = 'Admin'
 axios.defaults.headers.common['auth'] = 'token ' + token
 export const useAdminListStore = defineStore('AdminListStore', {
   actions: {
+    fetchFaqs(params) {
 
+
+      return axios.get('/faqs/list', { params,token })
+    },
 
     // 👉 Fetch users data
     fetchUsers(params) {
@@ -23,7 +27,11 @@ export const useAdminListStore = defineStore('AdminListStore', {
 
       return axios.get('/admins/list', { params,token })
     },
+    fetchPlans(params) {
 
+
+      return axios.get('/plans/list', { params,token })
+    },
     fetchRoles(params) {
 
 
@@ -44,6 +52,11 @@ export const useAdminListStore = defineStore('AdminListStore', {
     getSingleUser(id) {
       return new Promise((resolve, reject) => {
         axios.get('/admins/'+id+'/get',{ token }).then(response => resolve(response)).catch(error => reject(error))
+      })
+    },
+    getSingleRole(id) {
+      return new Promise((resolve, reject) => {
+        axios.get('/roles/'+id+'/get',{ token }).then(response => resolve(response)).catch(error => reject(error))
       })
     },
   },

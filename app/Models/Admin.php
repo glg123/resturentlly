@@ -27,6 +27,7 @@ class Admin extends Authenticatable
         'role',
         'avatar',
         'status',
+        'admin_role_id',
     ];
 
     /**
@@ -47,25 +48,31 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    protected $appends = ['adminAbilities'];
+  //  protected $appends = ['adminAbilities'];
 
     public function getadminAbilitiesAttribute()
     {
 
-        $Adminabilitie = Adminabilitie::where('admin_id', $this->id)->first()->value('abilities');
+        $Adminabilitie = Adminabilitie::where('admin_id', $this->id)->first();
 
-        return $Adminabilitie;
+        return $Adminabilitie->abilities;
+        if ($Adminabilitie) {
+            return $Adminabilitie->value('abilities');
+        }
 
+        return null;
 
     }
+
+   /* public function Adminabilitie()
+    {
+        return $this->hasOne(Adminabilitie::class, 'admin_id');
+    }*/
 
     public function Adminabilitie()
     {
-        return $this->hasOne(Adminabilitie::class, 'admin_id');
+        return $this->hasOne(AdminRole::class, 'id','admin_role_id',);
     }
-
-
-
     public function getAvatarAttribute($value)
     {
 
