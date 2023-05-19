@@ -1,0 +1,1 @@
+import{o,l as s,be as t,W as a}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const r={__name:"add_new",setup(c){return t(),a(),(n,u)=>(o(),s("h1",null,"cashiers systme"))}};typeof e=="function"&&e(r);export{r as default};

@@ -24,7 +24,7 @@ class RestaurantRateResource extends JsonResource
             'total_rate' => $this->total_rate,
             'user_id' => $this->user_id,
 
-            'user_name' => $this->user->name,
+            'user_name' => @$this->Owner->first_name,
             'note' => $this->note,
 
         ];

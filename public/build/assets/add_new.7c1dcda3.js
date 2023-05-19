@@ -1,0 +1,1 @@
+import{o,l as t,be as a,W as s}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const n={__name:"add_new",setup(r){return a(),s(),(c,u)=>(o(),t("h1",null,"add new meals"))}};typeof e=="function"&&e(n);export{n as default};

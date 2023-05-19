@@ -48,7 +48,7 @@ const route = useRoute()
 
 const handleChildEvent = () => {
 
-  console.log('done')
+
 
   fetchCities()
 

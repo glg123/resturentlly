@@ -1,7 +1,10 @@
 <?php
-
+//'delivery','take_away','table'
 return [
     'email'           => 'Email',
+    'delivery'           => 'Delivery',
+    'take_away'           => 'Take Away',
+    'table'           => 'Table',
     'login'          => 'Login',
     'logout'          => 'Logout',
     'my_profile'          => 'My Profile',

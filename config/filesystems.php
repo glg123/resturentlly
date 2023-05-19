@@ -80,6 +80,18 @@ return [
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],
+        'User' => [
+            'driver' => 'local',
+            'root' => public_path('storage/users/'),
+            'url' => env('APP_URL'),
+            'visibility' => 'public',
+        ],
+        'Meal' => [
+            'driver' => 'local',
+            'root' => public_path('storage/meals/'),
+            'url' => env('APP_URL'),
+            'visibility' => 'public',
+        ],
 
     ],
 

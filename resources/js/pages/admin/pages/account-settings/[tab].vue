@@ -13,13 +13,11 @@ const adminListStore = useAdminListStore()
 const settingStore = useSettingStore()
 
 const route = useRoute()
-const userData = ref()
+
 const serviceData = ref()
 const activeTab = ref(route.params.tab)
 
-adminListStore.getSingleUser(1).then(response => {
-  userData.value = response.data
-})
+
 
 settingStore.services().then(response => {
   serviceData.value = response.data

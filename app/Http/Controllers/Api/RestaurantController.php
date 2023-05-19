@@ -121,7 +121,7 @@ class RestaurantController extends Controller
 
         $restaurant = Restaurant::where('id', $id)->first();
 
-        return response()->json($restaurant);
+        return response()->json($restaurant,200);
     }
 
     public function states(Request $request)

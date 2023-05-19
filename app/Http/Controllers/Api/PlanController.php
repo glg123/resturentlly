@@ -46,7 +46,7 @@ class PlanController extends Controller
     }
     public function plans_home(Request $request)
     {
-        $user = auth()->guard('Admin')->user();
+       /* $user = auth()->guard('Admin')->user();
 
         $status = 401;
         $response = ['error' => 'Unauthorised'];
@@ -54,7 +54,7 @@ class PlanController extends Controller
         if ($user == null) {
 
             return response()->json($response, $status);
-        }
+        }*/
         $plans = Plan::query();
         if ($request->get('status')) {
             $plans = $plans->where('status', $request->get('status'));
@@ -199,6 +199,7 @@ class PlanController extends Controller
             'count_branch',
             'count_interval',
             'status',
+            'type',
         ]));
         $plan = Plan::where('id', $plan->id)->first();
         if (preg_match('/^data:image\/(\w+);base64,/', $request->get('logo'))) {

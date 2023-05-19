@@ -5,6 +5,7 @@ import { avatarText } from '@core/utils/formatters'
 import { useAdminListStore } from "@/views/apps/admin/useAdminListStore"
 import { useI18n } from "vue-i18n"
 import axios from "@axios"
+import {useThemeConfig} from "@core/composable/useThemeConfig";
 
 const { t } = useI18n()
 const userListStore = useAdminListStore()
@@ -22,12 +23,21 @@ const admins_count = ref(1)
 const admins_not_active = ref(1)
 const admins_block = ref(1)
 const router = useRouter()
+const { isAppRtl } = useThemeConfig()
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
-axios.defaults.headers.common['Language'] = 'ar'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+}
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+}
 axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+axios.defaults.headers.common['role'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'Bearer ' + token
 // 👉 Fetching users
 const fetchUsers = () => {
   userListStore.fetchUsers({
@@ -41,7 +51,7 @@ const fetchUsers = () => {
     //console.log(response.data.admins)
     users.value = response.data.admins.data
     admins_count.value = response.data.admins.data.length
-    totalPage.value = response.data.admins.total
+    totalPage.value = response.data.admins.last_page
     totalUsers.value = response.data.admins.total
     admins_active.value = response.data.admins_active
     admins_not_active.value = response.data.admins_not_active

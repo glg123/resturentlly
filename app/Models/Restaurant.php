@@ -71,6 +71,7 @@ class Restaurant extends Model
         'address_en',
         'owner_id',
         'type',
+        'count_emp',
         'parent_id',
     ];
 

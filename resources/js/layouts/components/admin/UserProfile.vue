@@ -9,7 +9,7 @@ const userData = JSON.parse(localStorage.getItem('userData') || 'null')
 const logout = () => {
   const userData = JSON.parse(localStorage.getItem('userData') || '{}')
   const userRole = userData && userData.role ? userData.role : null
-  let router_to='/dashboards/login/'
+  let router_to='/admin/login/'
   if(userRole==='admin')
   {
     router_to='/admin/login'

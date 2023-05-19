@@ -41,7 +41,6 @@ class UserRolePermission extends Model
     protected $fillable = [
         'abilities',
         'role_id',
-
         'status',
 
 

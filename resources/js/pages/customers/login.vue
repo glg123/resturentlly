@@ -1,7 +1,6 @@
 <script setup>
 import { VForm } from 'vuetify/components'
 import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import axios from '@axios'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
@@ -9,11 +8,9 @@ import { themeConfig } from '@themeConfig'
 import NavBarI18n from '@/layouts/components/NavBarI18n.vue'
 
 import Watch from '@/layouts/components/watch.vue'
-import {
-  emailValidator,
-  requiredValidator,
-} from '@validators'
-
+import VueCookies from "vue-cookies"
+import { isEmpty } from "@core/utils"
+import { useI18n } from "vue-i18n"
 import authV2LoginIllustrationBorderedDark2 from '@images/pages/auth-v2-register-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight2 from '@images/pages/auth-v2-register-illustration-bordered-light.png'
 import authV2LoginIllustrationDark2 from '@images/pages/auth-v2-register-illustration-dark.png'
@@ -21,40 +18,79 @@ import authV2LoginIllustrationLight2 from '@images/pages/auth-v2-register-illust
 
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
+const home_click = ()  => {
+  document.location.href = '/'
+}
+const required = val => {
+
+  if (String(val).trim().length == 0) {
+    return t('This field is required')
+  } else {
+    return true
+  }
+
+}
+
+const emailValidator = value => {
+  if (isEmpty(value))
+    return true
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  if (Array.isArray(value))
+    return value.every(val => re.test(String(val))) || t('The Email field must be a valid email')
+
+  return re.test(String(value)) || t('The Email field must be a valid email')
+}
+const integerValidator = value => {
+  if (isEmpty(value))
+    return true
+  if (Array.isArray(value))
+    return value.every(val => /^-?[0-9]+$/.test(String(val))) || t('This field must be an integer')
+
+  return /^-?[0-9]+$/.test(String(value)) || t('This field must be an integer')
+}
+const mobileValidator = value => {
+  if (isEmpty(value))
+    return true
+  if (Array.isArray(value))
+    return value.every(val => /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(String(val))) || t('This field must be an integer')
+
+  return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(String(value)) || t('This field must be an integer')
+}
+
 
 
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight2, authV2LoginIllustrationDark2, authV2LoginIllustrationBorderedLight2, authV2LoginIllustrationBorderedDark2, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
+
 const isPasswordVisible = ref(false)
 const route = useRoute()
 const router = useRouter()
 const ability = useAppAbility()
-
+const { t } = useI18n()
 const errors = ref({
   email: undefined,
   password: undefined,
 })
 
 const refVForm = ref()
-const email = ref('admin@demo.com')
-const password = ref('admin')
+const email = ref('')
+const password = ref('')
 const rememberMe = ref(false)
 
 const login = () => {
-  axios.post('/login', {
+  axios.post('customer/login', {
     email: email.value,
     password: password.value,
   }).then(r => {
     const { accessToken, userData, userAbilities } = r.data
 
-    console.log(r.data,'test')
+
     localStorage.setItem('userAbilities', JSON.stringify(userAbilities))
     ability.update(userAbilities)
     localStorage.setItem('userData', JSON.stringify(userData))
-    localStorage.setItem('accessToken', JSON.stringify(accessToken))
-
-    // Redirect to `to` query if exist or redirect to index route
-    router.replace(route.query.to ? String(route.query.to) : '/dashboards/')
+    localStorage.setItem('accessToken', accessToken)
+    VueCookies.set('auth', accessToken)
+    router.replace(route.query.to ? String(route.query.to) : '/customers/my')
   }).catch(e => {
     const { errors: formErrors } = e.response.data
 
@@ -69,9 +105,7 @@ const onSubmit = () => {
       login()
   })
 }
-const home_click = ()  => {
-  document.location.href = '/'
-}
+
 </script>
 
 <template>
@@ -137,24 +171,13 @@ const home_click = ()  => {
             />
 
             <h5 class="text-h5 font-weight-semibold mb-1">
-              Welcome to {{ themeConfig.app.title }}! 👋🏻
+              {{t('Welcome_to')}} {{ themeConfig.app.title }}! 👋🏻
             </h5>
             <p class="mb-0">
-              Please sign-in to your account and start the adventure
+             {{t('Please sign-in to your account and start the adventure')}}
             </p>
           </VCardText>
           <VCardText>
-            <VAlert
-              color="primary"
-              variant="tonal"
-            >
-              <p class="text-caption mb-2">
-                Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
-              </p>
-              <p class="text-caption mb-0">
-                Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-              </p>
-            </VAlert>
           </VCardText>
           <VCardText>
             <VForm
@@ -166,10 +189,9 @@ const home_click = ()  => {
                 <VCol cols="12">
                   <VTextField
                     v-model="email"
-                    label="Email"
+                    :rules="[required, emailValidator]"
+                    :label="t('email')"
                     type="email"
-                    :rules="[requiredValidator, emailValidator]"
-                    :error-messages="errors.email"
                   />
                 </VCol>
 
@@ -177,7 +199,7 @@ const home_click = ()  => {
                 <VCol cols="12">
                   <VTextField
                     v-model="password"
-                    label="Password"
+                    :label="t('password')"
                     :rules="[requiredValidator]"
                     :type="isPasswordVisible ? 'text' : 'password'"
                     :error-messages="errors.password"
@@ -188,13 +210,13 @@ const home_click = ()  => {
                   <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
                     <VCheckbox
                       v-model="rememberMe"
-                      label="Remember me"
+                      :label="t('Remember_me')"
                     />
                     <RouterLink
                       class="text-primary ms-2 mb-1"
-                      :to="{ name: 'forgot-password' }"
+                      :to="{ name: 'customers-forgot-password' }"
                     >
-                      Forgot Password?
+                      {{t('Forgot_Password')}}
                     </RouterLink>
                   </div>
 
@@ -202,7 +224,7 @@ const home_click = ()  => {
                     block
                     type="submit"
                   >
-                    Login
+                    {{t('login')}}
                   </VBtn>
                 </VCol>
 
@@ -211,30 +233,18 @@ const home_click = ()  => {
                   cols="12"
                   class="text-center"
                 >
-                  <span>New on our platform?</span>
+                  <span>{{t('New on our platform?')}}</span>
                   <RouterLink
                     class="text-primary ms-2"
                     :to="{ name: 'register' }"
                   >
-                    Create an account
+                    {{t('Create an account')}}
                   </RouterLink>
                 </VCol>
-                <VCol
-                  cols="12"
-                  class="d-flex align-center"
-                >
-                  <VDivider/>
-                  <span class="mx-4">or</span>
-                  <VDivider/>
-                </VCol>
+
 
                 <!-- auth providers -->
-                <VCol
-                  cols="12"
-                  class="text-center"
-                >
-                  <AuthProvider/>
-                </VCol>
+
               </VRow>
             </VForm>
           </VCardText>

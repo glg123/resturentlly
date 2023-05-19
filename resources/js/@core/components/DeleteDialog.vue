@@ -30,7 +30,7 @@ const props = defineProps({
     required: true,
   },
 })
-const {t} = useI18n()
+const { t } = useI18n()
 const emit = defineEmits([
   'update:isDialogVisible',
   'confirm',

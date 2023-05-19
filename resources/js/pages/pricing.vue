@@ -22,7 +22,7 @@ else
   dir_h1.value='text-left'
 }
 
-axios.defaults.headers.common['type'] = 'Admin'
+axios.defaults.headers.common['type'] = 'User'
 axios.defaults.headers.common['auth'] = 'token ' + token
 const route = useRoute()
 const router = useRouter()
@@ -161,7 +161,6 @@ meta:
  layout: blank
  action: read
  subject: Auth
- redirectIfLoggedIn: true
 </route>
 
 <style lang="scss">

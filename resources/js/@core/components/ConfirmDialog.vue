@@ -1,4 +1,6 @@
 <script setup>
+import {useI18n} from "vue-i18n";
+
 const props = defineProps({
   confirmationMsg: {
     type: String,
@@ -9,7 +11,7 @@ const props = defineProps({
     required: true,
   },
 })
-
+const {t} = useI18n()
 const emit = defineEmits([
   'update:isDialogVisible',
   'confirm',
@@ -59,7 +61,7 @@ const onCancel = () => {
           variant="elevated"
           @click="onConfirmation"
         >
-          Confirm
+          {{t('Confirm')}}
         </VBtn>
 
         <VBtn
@@ -67,7 +69,7 @@ const onCancel = () => {
           variant="tonal"
           @click="onCancel"
         >
-          Cancel
+          {{t('Cancel')}}
         </VBtn>
       </VCardActions>
     </VCard>

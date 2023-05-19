@@ -1,0 +1,1 @@
+import{o,l as t,be as a,W as s}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const r={__name:"add_new",setup(n){return a(),s(),(c,u)=>(o(),t("h1",null,"add new sub categories"))}};typeof e=="function"&&e(r);export{r as default};

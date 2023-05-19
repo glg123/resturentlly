@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'delivery'           => 'توصيل',
+    'take_away'           => 'استلام من المطعم',
+    'table'           => 'داخل المطعم',
     'logout'          => 'تسجيل خروج',
     'my_profile'          => 'ملفي الشخصي',
     // frontend

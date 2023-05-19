@@ -66,7 +66,7 @@ const dialogModelValueUpdate = val => {
               <VTextField
                 v-model="cardDetails.number"
                 label="Card Number"
-                type="number"
+                type="text"
               />
             </VCol>
 
@@ -99,18 +99,13 @@ const dialogModelValueUpdate = val => {
             >
               <VTextField
                 v-model="cardDetails.cvv"
-                type="password"
+                type="text"
                 label="CVV Code"
               />
             </VCol>
 
             <!-- 👉 Card Primary Set -->
-            <VCol cols="12">
-              <VSwitch
-                v-model="cardDetails.isPrimary"
-                label="Set as primary card"
-              />
-            </VCol>
+
 
             <!-- 👉 Card actions -->
             <VCol

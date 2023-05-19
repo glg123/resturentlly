@@ -1,0 +1,1 @@
+import{o,l as t,be as a,W as n}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const r={__name:"add_new",setup(s){return a(),n(),(c,u)=>(o(),t("h1",null,"add new"))}};typeof e=="function"&&e(r);export{r as default};

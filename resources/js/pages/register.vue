@@ -37,12 +37,10 @@ const { t } = useI18n()
 // Router
 const route = useRoute()
 const router = useRouter()
-let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
 axios.defaults.headers.common['Language'] = 'ar'
-axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+
 const changeAvatar_from = avatar_file => {
 
 
@@ -57,13 +55,10 @@ const changeAvatar_from = avatar_file => {
   }
 }
 // Ability
-const ability = useAppAbility()
+
 
 // Form Errors
-const errors = ref({
-  email: undefined,
-  password: undefined,
-})
+const errors = ref([])
 
 const register = () => {
   axios.post('/register', {
@@ -74,38 +69,36 @@ const register = () => {
     password: password.value,
     type: typeUser.value,
     avatar: avatar.value,
-    token,
+
 
   }).then(r => {
-    const { accessToken, userData, userAbilities } = r.data
+    if(r.data==='customer')
+    {
+      router.replace(route.query.to ? String(route.query.to) : '/customers/activate_account')
 
-    localStorage.setItem('userAbilities', JSON.stringify(userAbilities))
-    ability.update(userAbilities)
-    localStorage.setItem('userData', JSON.stringify(userData))
-    localStorage.setItem('accessToken', JSON.stringify(accessToken))
-    VueCookies.set('auth', accessToken)
+    }
+    else
+    {
+      router.replace(route.query.to ? String(route.query.to) : '/dashboards/activate_account')
 
-    router.replace(route.query.to ? String(route.query.to) : '/')
+    }
 
-    return null
   }).catch(e => {
-    const { errors: formErrors } = e.response.data
 
-    errors.value = formErrors
-    console.error(e.response.data)
+    errors.value = e.response.data.message
   })
 }
-
-const imageVariant = useGenerateImageVariant(authV2RegisterIllustrationLight, authV2RegisterIllustrationDark, authV2RegisterIllustrationBorderedLight, authV2RegisterIllustrationBorderedDark, true)
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
-const isPasswordVisible = ref(false)
-
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid)
       register()
   })
 }
+const imageVariant = useGenerateImageVariant(authV2RegisterIllustrationLight, authV2RegisterIllustrationDark, authV2RegisterIllustrationBorderedLight, authV2RegisterIllustrationBorderedDark, true)
+const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
+const isPasswordVisible = ref(false)
+
+
 const home_click = ()  => {
   document.location.href = '/'
 }

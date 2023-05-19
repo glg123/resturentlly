@@ -46,7 +46,7 @@ class UserRole extends Model
 
     ];
     protected $appends = ['role_name'];
-    protected $with=['RolePermissions'];
+    protected $with=['UserRolePermissions'];
 
     public function getRoleNameAttribute()
     {

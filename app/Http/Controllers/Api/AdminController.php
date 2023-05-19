@@ -38,7 +38,7 @@ class AdminController extends Controller
         if ($request->get('q')) {
             $admins = $admins->where('name', 'like', '%' . $request->get('q') . '%');
         }
-        $admins = $admins->paginate(1);
+        $admins = $admins->paginate();
         $admins_active = Admin::where('status', 'active')->count();
         $admins_not_active = Admin::where('status', 'not_active')->count();
         $admins_block = Admin::where('status', 'block')->count();
@@ -121,6 +121,7 @@ class AdminController extends Controller
         }
 
 
+        $permissions[count($request->get('permissions'))]=  array('action' => 'read', 'subject' => 'Auth');
         // dd($request->all(),$permissions,$x);
         $request->merge([
             'abilities' => $permissions,
@@ -256,10 +257,33 @@ class AdminController extends Controller
             $roles = $roles->where('role_name_en', 'like', '%' . $request->get('q') . '%')
                 ->orwhere('role_name_ar', 'like', '%' . $request->get('q') . '%');
         }
-        $roles = $roles->get();
+        $roles = $roles->paginate();
         return response()->json($roles);
     }
 
+
+    public function roles_select(Request $request)
+    {
+        $user = auth()->guard('Admin')->user();
+
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if ($user == null) {
+
+            return response()->json($response, $status);
+        }
+        $roles = AdminRole::query();
+        if ($request->get('status')) {
+            $roles = $roles->where('status', $request->get('status'));
+        }
+        if ($request->get('q')) {
+            $roles = $roles->where('role_name_en', 'like', '%' . $request->get('q') . '%')
+                ->orwhere('role_name_ar', 'like', '%' . $request->get('q') . '%');
+        }
+        $roles = $roles->get();
+        return response()->json($roles);
+    }
     public function single_admin($id)
     {
 

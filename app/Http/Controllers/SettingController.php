@@ -25,6 +25,7 @@ class SettingController extends Controller
 
         Session::put('locale', $lang);
 
+
         //  dd(Session::get('locale'));
         return back();
     }

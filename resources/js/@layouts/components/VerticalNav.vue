@@ -55,7 +55,7 @@ const resolveNavItemComponent = item => {
     return VerticalNavSectionTitle
   if ('children' in item)
     return VerticalNavGroup
-  
+
   return VerticalNavLink
 }
 
@@ -70,6 +70,10 @@ const updateIsVerticalNavScrolled = val => isVerticalNavScrolled.value = val
 
 const handleNavScroll = evt => {
   isVerticalNavScrolled.value = evt.target.scrollTop > 0
+}
+const home_click = () => {
+
+  document.location.href = '/'
 }
 </script>
 
@@ -90,8 +94,9 @@ const handleNavScroll = evt => {
     <!-- 👉 Header -->
     <div class="nav-header">
       <slot name="nav-header">
-        <RouterLink
-          to="/"
+        <a
+          @click="home_click"
+          href="#"
           class="app-logo d-flex align-center gap-x-3 app-title-wrapper"
         >
           <VNodeRenderer :nodes="config.app.logo2" />
@@ -104,7 +109,7 @@ const handleNavScroll = evt => {
               {{ config.app.title }}
             </h1>
           </Transition>
-        </RouterLink>
+        </a>
         <!-- 👉 Vertical nav actions -->
         <!-- Show toggle collapsible in >md and close button in <md -->
         <template v-if="!isLessThanOverlayNavBreakpoint(windowWidth)">

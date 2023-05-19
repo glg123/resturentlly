@@ -18,7 +18,8 @@ class Authenticate extends Middleware
 
 
         if (! $request->expectsJson()) {
-            return route('login');
+            //return route('login');
+            return JsonResponse::fail('Credentials not match', 401);
         }
     }
     protected function unauthenticated($request, array $guards)

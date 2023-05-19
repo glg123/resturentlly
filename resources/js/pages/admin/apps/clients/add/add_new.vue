@@ -1,5 +1,4 @@
 <script setup>
-import * as demoCode from '@/views/demos/forms/form-validation/demoCodeFormValidation'
 import {
   alphaDashValidator,
   alphaValidator,
@@ -10,19 +9,27 @@ import {
   lengthValidator,
   passwordValidator,
   regexValidator,
-  requiredValidator,
   urlValidator,
 } from '@validators'
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router";
 import axios from "@axios";
-
+import {useThemeConfig} from "@core/composable/useThemeConfig";
+const { isAppRtl } = useThemeConfig()
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
-axios.defaults.headers.common['Language'] = 'ar'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+}
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+}
 axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+axios.defaults.headers.common['role'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'Bearer ' + token
 const required = val => {
 
   if (String(val).trim().length == 0) {

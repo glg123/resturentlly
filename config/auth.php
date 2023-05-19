@@ -41,13 +41,25 @@ return [
             'provider' => 'users',
         ],
         'api' => [
-            'driver' => 'token',
+            'driver' => 'sanctum',
             'provider' => 'users',
             'hash' => false,
         ],
         'Admin' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'admins',
+
+
+        ],
+        'customer' => [
+            'driver' => 'sanctum',
+            'provider' => 'customers',
+
+            // 'model' => App\EstateFund::class,
+        ],
+        'user' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
 
             // 'model' => App\EstateFund::class,
         ],
@@ -79,7 +91,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
         ],
-
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

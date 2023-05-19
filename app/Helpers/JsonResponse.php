@@ -17,11 +17,11 @@ class JsonResponse
     static function success($result = [], $message = "Success")
     {
         return Response::json([
-            "status" => false,
-            "result" => $message,
-            "message" => $result,
+            "status" => true,
+            "result" => $result,
+            "message" => $message,
             'errors' => null
-        ]);
+        ],200);
     }
 
     static function fail($message, $code = 400)

@@ -9,9 +9,13 @@ if(isAppRtl.value===true)
 {
   axios.defaults.headers.common['Language'] = 'ar'
 }
-axios.defaults.headers.common['Language'] = 'en'
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+}
 axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+axios.defaults.headers.common['role'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'Bearer ' + token
 export const useUserListStore = defineStore('UserListStore', {
   actions: {
     // 👉 Fetch users data

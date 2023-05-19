@@ -41,7 +41,7 @@ class RestaurantRate extends Model
         'restaurant_id',
         'price_rate',
         'service_rate',
-        'value_rate',
+        'order_id',
         'food_rate',
         'total_rate',
         'note',

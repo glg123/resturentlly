@@ -28,9 +28,9 @@ const fetchRoles = () => {
     page: currentPage.value,
   }).then(response => {
     //console.log(response.data.admins)
-    roles.value = response.data.roles.data
-    totalPage.value = response.data.roles.total
-    totalUsers.value = response.data.roles.total
+    roles.value = response.data.data
+    totalPage.value = response.data.last_page
+    totalUsers.value = response.data.total
 
   }).catch(error => {
     console.error(error)

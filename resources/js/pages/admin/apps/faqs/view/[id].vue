@@ -3,6 +3,7 @@ import { useAdminListStore } from '@/views/apps/admin/useAdminListStore'
 import UserBioPanel from '@/views/apps/admin/view/UserBioPanel.vue'
 import axios from "@axios"
 import { useI18n } from "vue-i18n"
+import {useThemeConfig} from "@core/composable/useThemeConfig";
 
 
 const adminListStore = useAdminListStore()
@@ -11,13 +12,21 @@ const rolesData = ref([])
 const PeFaqData = ref([])
 const errors = ref([])
 const router = useRouter()
-
+const { isAppRtl } = useThemeConfig()
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
-axios.defaults.headers.common['Language'] = 'ar'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+}
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+}
 axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+axios.defaults.headers.common['role'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'Bearer ' + token
 const required = val => {
 
   if (String(val).trim().length == 0) {

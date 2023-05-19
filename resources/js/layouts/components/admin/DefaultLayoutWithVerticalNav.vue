@@ -39,14 +39,9 @@ const { width: windowWidth } = useWindowSize()
             size="24"
           />
         </VBtn>
-
-
-
         <VSpacer />
-
         <NavBarI18n />
         <NavbarThemeSwitcher />
-        <NavbarShortcuts />
         <NavBarNotifications class="me-2" />
         <UserProfile />
       </div>

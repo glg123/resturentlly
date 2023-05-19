@@ -26,7 +26,7 @@ const fetchPlans = () => {
   }).then(response => {
     console.log(response.data.data)
     plans.value = response.data.data
-    totalPage.value = response.data.total
+    totalPage.value = response.data.last_page
     totalUsers.value = response.data.total
 
   }).catch(error => {

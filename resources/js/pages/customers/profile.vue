@@ -34,8 +34,8 @@ const errors = ref({
 })
 
 const refVForm = ref()
-const email = ref('admin@demo.com')
-const password = ref('admin')
+const email = ref('')
+const password = ref('')
 const rememberMe = ref(false)
 
 const login = () => {
@@ -230,6 +230,7 @@ const onSubmit = () => {
 
 <route lang="yaml">
 meta:
+ layout: default_customer
  action: read
- subject: AclDemo
+ subject: customer_profile
 </route>

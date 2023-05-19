@@ -1,7 +1,6 @@
 <script setup>
 import { VForm } from 'vuetify/components'
 import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import axios from '@axios'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
@@ -9,73 +8,146 @@ import { themeConfig } from '@themeConfig'
 import NavBarI18n from '@/layouts/components/NavBarI18n.vue'
 
 import Watch from '@/layouts/components/watch.vue'
-import {
-  emailValidator,
-  requiredValidator,
-} from '@validators'
+
+
+const home_click = ()  => {
+  document.location.href = '/'
+}
+const required = val => {
+
+  if (String(val).trim().length == 0) {
+    return t('This field is required')
+  } else {
+    return true
+  }
+
+}
+
+const emailValidator = value => {
+  if (isEmpty(value))
+    return true
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  if (Array.isArray(value))
+    return value.every(val => re.test(String(val))) || t('The Email field must be a valid email')
+
+  return re.test(String(value)) || t('The Email field must be a valid email')
+}
+const integerValidator = value => {
+  if (isEmpty(value))
+    return true
+  if (Array.isArray(value))
+    return value.every(val => /^-?[0-9]+$/.test(String(val))) || t('This field must be an integer')
+
+  return /^-?[0-9]+$/.test(String(value)) || t('This field must be an integer')
+}
+const mobileValidator = value => {
+  if (isEmpty(value))
+    return true
+  if (Array.isArray(value))
+    return value.every(val => /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(String(val))) || t('This field must be an integer')
+
+  return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(String(value)) || t('This field must be an integer')
+}
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
 import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
 import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import Default from "@/layouts/default.vue";
+
 
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
+import VueCookies from "vue-cookies"
+import { isEmpty } from "@core/utils"
+import { useI18n } from "vue-i18n"
 const isPasswordVisible = ref(false)
 const route = useRoute()
 const router = useRouter()
 const ability = useAppAbility()
-
+const { t } = useI18n()
 const errors = ref({
   email: undefined,
   password: undefined,
 })
 
 const refVForm = ref()
-const email = ref('admin@demo.com')
-const password = ref('admin')
+const email = ref('')
+const password = ref('')
 const rememberMe = ref(false)
-
+const isTrue = ref(false)
+const isError = ref(false)
+const disabled = ref(false)
+const loading = ref(false)
 const login = () => {
-  axios.post('/login', {
+  axios.post('client/login', {
     email: email.value,
     password: password.value,
   }).then(r => {
     const { accessToken, userData, userAbilities } = r.data
 
-    console.log(r.data,'test')
+
     localStorage.setItem('userAbilities', JSON.stringify(userAbilities))
     ability.update(userAbilities)
     localStorage.setItem('userData', JSON.stringify(userData))
-    localStorage.setItem('accessToken', JSON.stringify(accessToken))
-
-    // Redirect to `to` query if exist or redirect to index route
-    router.replace(route.query.to ? String(route.query.to) : '/dashboards/')
+    localStorage.setItem('accessToken', accessToken)
+    VueCookies.set('auth', accessToken)
+    isTrue.value = true
+    loading.value = false
+    disabled.value = false
+    router.replace(route.query.to ? String(route.query.to) : '/dashboards/analytics')
   }).catch(e => {
-    const { errors: formErrors } = e.response.data
+    console.log(e.response.data.message)
+    errors.value = e.response.data.message
+    isError.value = true
+    loading.value = false
+    disabled.value = false
 
-    errors.value = formErrors
-    console.error(e.response.data)
   })
 }
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid)
+    {
+      loading.value = true
+      disabled.value = true
       login()
+    }
+
   })
 }
-const home_click = ()  => {
-  document.location.href = '/'
-}
+
 </script>
 
 <template>
   <div>
     <VRow>
+      <VSnackbar location="top" v-model="isTrue">
+        {{$t('Done')}}
 
+        <template #actions>
+          <VBtn
+            color="success"
+            @click="isTrue = false"
+          >
+            {{$t('Close')}}
+          </VBtn>
+        </template>
+      </VSnackbar>
+      <VSnackbar color="error" location="top" v-model="isError">
+        {{ errors }}
+
+        <template #actions>
+          <VBtn
+            color="success"
+            @click="isError = false"
+
+          >
+            {{$t('Close')}}
+          </VBtn>
+        </template>
+      </VSnackbar>
       <VCol
         cols="6"
         class="mx-auto"
@@ -135,24 +207,13 @@ const home_click = ()  => {
             />
 
             <h5 class="text-h5 font-weight-semibold mb-1">
-              Welcome to {{ themeConfig.app.title }}! 👋🏻
+              {{t('Welcome_to')}} {{ themeConfig.app.title }}! 👋🏻
             </h5>
             <p class="mb-0">
-              Please sign-in to your account and start the adventure
+              {{t('Please sign-in to your account and start the adventure')}}
             </p>
           </VCardText>
           <VCardText>
-            <VAlert
-              color="primary"
-              variant="tonal"
-            >
-              <p class="text-caption mb-2">
-                Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
-              </p>
-              <p class="text-caption mb-0">
-                Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-              </p>
-            </VAlert>
           </VCardText>
           <VCardText>
             <VForm
@@ -164,10 +225,9 @@ const home_click = ()  => {
                 <VCol cols="12">
                   <VTextField
                     v-model="email"
-                    label="Email"
+                    :rules="[required, emailValidator]"
+                    :label="t('email')"
                     type="email"
-                    :rules="[requiredValidator, emailValidator]"
-                    :error-messages="errors.email"
                   />
                 </VCol>
 
@@ -175,7 +235,7 @@ const home_click = ()  => {
                 <VCol cols="12">
                   <VTextField
                     v-model="password"
-                    label="Password"
+                    :label="t('password')"
                     :rules="[requiredValidator]"
                     :type="isPasswordVisible ? 'text' : 'password'"
                     :error-messages="errors.password"
@@ -186,13 +246,13 @@ const home_click = ()  => {
                   <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
                     <VCheckbox
                       v-model="rememberMe"
-                      label="Remember me"
+                      :label="t('Remember_me')"
                     />
                     <RouterLink
                       class="text-primary ms-2 mb-1"
-                      :to="{ name: 'forgot-password' }"
+                      :to="{ name: 'dashboards-forgot-password' }"
                     >
-                      Forgot Password?
+                      {{t('Forgot_Password')}}
                     </RouterLink>
                   </div>
 
@@ -200,7 +260,7 @@ const home_click = ()  => {
                     block
                     type="submit"
                   >
-                    Login
+                    {{t('login')}}
                   </VBtn>
                 </VCol>
 
@@ -209,30 +269,18 @@ const home_click = ()  => {
                   cols="12"
                   class="text-center"
                 >
-                  <span>New on our platform?</span>
+                  <span>{{t('New on our platform?')}}</span>
                   <RouterLink
                     class="text-primary ms-2"
                     :to="{ name: 'register' }"
                   >
-                    Create an account
+                    {{t('Create an account')}}
                   </RouterLink>
                 </VCol>
-                <VCol
-                  cols="12"
-                  class="d-flex align-center"
-                >
-                  <VDivider/>
-                  <span class="mx-4">or</span>
-                  <VDivider/>
-                </VCol>
+
 
                 <!-- auth providers -->
-                <VCol
-                  cols="12"
-                  class="text-center"
-                >
-                  <AuthProvider/>
-                </VCol>
+
               </VRow>
             </VForm>
           </VCardText>

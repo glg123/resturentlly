@@ -314,7 +314,7 @@ class SettingController extends Controller
     }
     public function faqs_home(Request $request)
     {
-        $user = auth()->guard('Admin')->user();
+      /*  $user = auth()->guard('Admin')->user();
 
         $status = 401;
         $response = ['error' => 'Unauthorised'];
@@ -322,7 +322,7 @@ class SettingController extends Controller
         if ($user == null) {
 
             return response()->json($response, $status);
-        }
+        }*/
         $faq = Faq::query();
         if ($request->get('status')) {
             $faq = $faq->where('status', $request->get('status'));

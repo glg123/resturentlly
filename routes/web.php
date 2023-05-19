@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('{any2}/{any?}', function () {
     return view('application');
 })->where('any', '^(?!graphql|telescope|price)[/\w\·-]*')
-->where('any2', 'register|customers|choose_login|dashboards|admin|login|build|pricing|pages|forms');
+->where('any2', 'staff|not-authorized-guest|not-authorized|forgot-password|register|customers|choose_login|dashboards|admin|login|build|pricing|pages|forms');
 /*Route::get('{any?}', function() {
     return view('application');
 })->where('any', '.*');*/

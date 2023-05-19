@@ -16,7 +16,11 @@ declare module '@vue/runtime-core' {
     AppPricing: typeof import('./resources/js/@core/components/AppPricing.vue')['default']
     AppSearchHeader: typeof import('./resources/js/@core/components/AppSearchHeader.vue')['default']
     BuyNow: typeof import('./resources/js/@core/components/BuyNow.vue')['default']
+    CancelPlan: typeof import('./resources/js/@core/components/CancelPlan.vue')['default']
     CardAddEditDialog: typeof import('./resources/js/@core/components/CardAddEditDialog.vue')['default']
+    CardPayDialog: typeof import('./resources/js/@core/components/CardPayDialog.vue')['default']
+    CardPayDialog2: typeof import('./resources/js/@core/components/CardPayDialog2.vue')['default']
+    CardPayDialog3: typeof import('./resources/js/@core/components/CardPayDialog3.vue')['default']
     CardStatisticsHorizontal: typeof import('./resources/js/@core/components/CardStatisticsHorizontal.vue')['default']
     CardStatisticsVertical: typeof import('./resources/js/@core/components/CardStatisticsVertical.vue')['default']
     CardStatisticsVerticalSimple: typeof import('./resources/js/@core/components/CardStatisticsVerticalSimple.vue')['default']
@@ -278,6 +282,7 @@ declare module '@vue/runtime-core' {
     DemoTooltipVModelSupport: typeof import('./resources/js/views/demos/components/tooltip/DemoTooltipVModelSupport.vue')['default']
     DialogCloseBtn: typeof import('./resources/js/@core/components/DialogCloseBtn.vue')['default']
     EditAddressDialog: typeof import('./resources/js/@core/components/EditAddressDialog.vue')['default']
+    EmailOtpInput: typeof import('./resources/js/@core/components/EmailOtpInput.vue')['default']
     EnableOneTimePasswordDialog: typeof import('./resources/js/@core/components/EnableOneTimePasswordDialog.vue')['default']
     ErrorHeader: typeof import('./resources/js/@core/components/ErrorHeader.vue')['default']
     I18n: typeof import('./resources/js/@core/components/I18n.vue')['default']
@@ -292,6 +297,7 @@ declare module '@vue/runtime-core' {
     TimelineCard: typeof import('./resources/js/views/demos/components/timeline/TimelineCard.vue')['default']
     TimelineWithIcons: typeof import('./resources/js/views/demos/components/timeline/TimelineWithIcons.vue')['default']
     UserInfoEditDialog: typeof import('./resources/js/@core/components/UserInfoEditDialog.vue')['default']
+    UserRateOrderDialog: typeof import('./resources/js/@core/components/UserRateOrderDialog.vue')['default']
     UserUpgradePlanDialog: typeof import('./resources/js/@core/components/UserUpgradePlanDialog.vue')['default']
   }
 }

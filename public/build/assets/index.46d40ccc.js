@@ -1,0 +1,1 @@
+import{o as t,l as o,be as s,W as r}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const a={__name:"index",setup(c){return s(),r(),(n,u)=>(t(),o("h1",null,"Smart Devices list"))}};typeof e=="function"&&e(a);export{a as default};

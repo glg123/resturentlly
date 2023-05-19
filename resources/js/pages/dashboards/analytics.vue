@@ -170,7 +170,7 @@ const statisticsVertical = {
 
 <route lang="yaml">
 meta:
-layout: blank
-action: read
-subject: Auth
+ layout: default_client
+ action: read
+ subject: rest_maneger
 </route>

@@ -15,11 +15,6 @@ const userData = JSON.parse(localStorage.getItem('userData') || '{}')
 const userRole = userData && userData.role ? userData.role : null
 let menus=[]
 
-if (userRole !== 'admin') {
-
-  menus=  [...dashboard]
-} else {
-
   menus= [...dashboard, ...admins , ...permissions , ...restaurants , ...plans,  ...clients , ...user_subscribes, ...cities , ...states , ...countries, ...faqs ]
-}
+
 export default menus

@@ -1,0 +1,1 @@
+import{o as t,l as o,be as s,W as n}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const r={__name:"index",setup(a){return s(),n(),(c,l)=>(t(),o("h1",null,"clients list"))}};typeof e=="function"&&e(r);export{r as default};

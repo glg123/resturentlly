@@ -2,6 +2,59 @@
   "UI Elements": "عناصر واجهة المستخدم",
   "Admins": "المدراء",
   "Clients": "العملاء",
+  "Month": "الشهر",
+  "Year": "السنة",
+
+  "SmartDevices": "الاجهزة الذكية",
+  "Materials": "المواد الخام",
+  "Floors": "الطوابق",
+  "Tables": "الطاولات",
+  "Bookings": "الحجوزات",
+  "Cashiers": "الكاشير",
+  "Promotions": "الاعلانات الترويجية",
+
+
+  "Cookers": "المطبخ",
+  "Meals": "الوجبات",
+  "Categories": "التصنيفات",
+  "SubCategories": "التصنيفات الفرعية",
+  "subscribe": "اشتراك",
+  "Staffs": "الموظفين",
+  "Reports": "التقارير",
+  "MySubScribe": "إشتراكي",
+  "myPlan": "خطتي",
+
+  "Current_Plan": "الخطة الحالية",
+
+  "Active_until": "فعالة حتى ",
+  "Per_Year": "سنويا ",
+  "Days": "أيام ",
+  "ofs": "من ",
+
+  "days remaining until your plan requires update": "الأيام المتبقية حتى تتطلب خطتك التحديث ",
+
+  "emp remaining until your plan requires update": "الموظفين المتبقية حتى تتطلب خطتك التحديث ",
+
+
+  "branches remaining until your plan requires update": "الفروع المتبقية حتى تتطلب خطتك التحديث ",
+
+  "Your plan requires update": "تتطلب خطتك التحديث",
+
+  "We need your attention!": "نحن بحاجة إلى انتباهكم! ",
+  "Standard plan for small to medium businesses": "خطة قياسية للشركات الصغيرة والمتوسطة ",
+
+  "We will send you a notification upon Subscription expiration": "سنرسل إليك إشعارًا عند انتهاء صلاحية الاشتراك",
+
+  "Your_Current_Plan_is": "خطتك الحالية هي : ",
+
+
+
+
+
+
+  "CVV": "الرقم السري",
+
+
   "about_en": "من نحن English",
   "about_ar": "من نحن عربي",
   "Site_Settings": "إعدادت الموقع",
@@ -83,6 +136,12 @@
   "to": "من",
   "main": "رئيسي",
   "branch": "فرع",
+  "Card expires at": "البطاقة تنتهي في ",
+
+
+  "PaymentMethods": "طرق الدفع",
+
+  "MyCards": "بطاقتي",
   "Branches": "فروع المطاعم",
   "rest_name": "اسم المطعم",
   "rest_email": "البريد الالكتروني للمطعم",
@@ -133,11 +192,61 @@
   "Apex Chart": "مخطط أبيكس",
   "Chartjs": "تشارتجس",
   "register": "تسجيل",
-
   "login": "تسجيل دخول",
+  "Set New Password": "إنشاء كلمة مرور جديدة",
+  "Reset_Password": "كلمة مرور جديدة",
+  "New Password": "كلمة مرور جديدة",
+  "Confirm Password": "تأكيد كلمة المرور",
+  "for": "لل ",
+  "rate_meal_order": "تقييم الطلب",
 
+  "meal_name": "اسم الوجبة",
+  "restaurant_name": "اسم المطعم",
+  "staff_name": "اسم الموظف",
+  "rate_order": "تقييم طلبي",
+  "price_rate": "تقييم السعر",
+  "service_rate": "تقييم الخدمة",
+  "food_rate": "تقييم الطعام",
+  "send_your_note": "اكتب ملاحظتك هنا",
+  "note": "الملاحظات",
+
+
+
+  "meal_id": "رقم الوجبة",
+
+  "restaurant_mobile": "رقم جوال المطعم",
+
+
+  "discount": "قيمة الخصم",
+  "meal_order_details": "تفاصيل الطلب",
+
+  "total_price": "السعر الإجمالي",
+  "type_order": "نوع الطلب",
+  "price_before_dis": "السعر قبل الخصم",
+  "price_after_dis": "السعر بعد الخصم",
+
+  "watting": "انتظار",
+  "cancel": "ملغاة",
+  "done": "منتهي",
+  "in_progress": "قيد التجهيز",
+  "Orders_Meal": "طلبات الوجبات",
+
+
+  "Resend": "إعادة ارسال",
+
+  "Didnt get the code?": "لم تتلقى كود التفعيل ؟",
+
+  "Verify my account": "تفعيل الحساب",
+
+  "Type your 6 digit security code": "ادخل الكود الخاص بك المكون من 6 ارقام",
+  "activate_msg": "تم ارسال كود التفعيل للبريد الخاص بك , من فضلك قم بادخال الكود في الحقول ادناه",
+  "activate_account": "تفعيل الحساب",
+  "Back to login": "الرجوع لتسجيل الدخول",
+  "Enter your email and well send you instructions to reset your password": "من فضلك ادخل البريد الالكتروني سوف نرسل لك معلومات الدخول",
+  "Send Reset Link": "إرسال رابط التفعيل",
+  "Create an account": "إنشاء حساب جديد",
+  "New on our platform?": "هل انت جديد",
   "Already have an account?": "لديك حساب بالفعل؟",
-
   "Account Settings": "إعدادت الحساب",
   "User Profile": "ملف تعريفي للمستخدم",
   "FAQ": "التعليمات",
@@ -225,30 +334,37 @@
   "state_name": "اسم المقاطعة",
   "country_name": "اسم الدولة",
   "Confirm": "تأكيد",
+  "Remember_me": "تذكرني",
+  "Forgot_Password": "نسيت كلمة المرور",
+  "Welcome_to": "مرحبا بك ",
+  "Please sign-in to your account and start the adventure": "الرجاء تسجيل الدخول إلى حسابك وبدء المغامرة",
   "Are you sure you want to deactivate your account?": "هل انت متأكد من عملية الحذف",
   "Save changes": "حفظ التغيرات",
   "logo": "الايقونة",
+
+  "Are you sure to cancel your subscription?": "هل أنت متأكد من إلغاء اشتراكك؟",
+
+  "CancelSubscription": "الغاء اشتراك",
+  "upgradePlan": "ترقية الخطة",
+
   "year": "سنوي",
+
+  "cvv": "الرمز السري",
+  "EXPIRES": "التاريخ",
+  "CARDHOLDER": "الاسم كامل",
   "free": "مجانا",
   "plans": "الخطط والاشتراكات",
-
   "USD": "دولار",
   "Popular": "مشهورة",
   "select": "اختر الخطة",
   "free_plan": "الخطة المجانية",
-
-
-
-
   "description_en": "الوصف English",
   "description_ar": "الوصف عربي",
   "Choose the best plan to fit your needs.": "إختر الخطة المناسبة لاحتياجات مطعمك",
   "Let us help answer the most common questions.": "دعنا نساعد في الإجابة على الأسئلة الأكثر شيوعًا.",
-
   "Still not convinced? Start with a FREE trial!": "مازلت غير مقتنع ؟ ابدأ مع خطة مجانية",
   "You will get full access to all the features for 14 days.": "سيكون لديك كامل الصلاحيات لمدة 14 يوم",
-
-"Start-14-day FREE trial": "إبدا الخطة المجانية",
+  "Start-14-day FREE trial": "إبدا الخطة المجانية",
   "free": "مجانية",
   "title": "العنوان",
   "paid": "مدفوعة",
@@ -258,13 +374,10 @@
   "Select Type": "اختر نوع الخطة",
   "manager": "مدير",
   "staff": "موظف",
-
   "Experience the digital experience of restaurants": "اختبر التجربة الرقمية للمطاعم",
   "register_with_us": "سجل معنا",
   "I_agree_to": "انا اوافق علي",
-
   "privacy_policy_terms": "الشروط والاحكام",
-
   "This field must be an integer": "الحقل يجب ان يكون رقما",
   "Select Client Type": "اختر نوع العميل",
   "customer": "زبون",

@@ -1,6 +1,7 @@
 <script setup>
 import axios from "@axios"
 import { useI18n } from "vue-i18n"
+import {useThemeConfig} from "@core/composable/useThemeConfig";
 const { t } = useI18n()
 const props = defineProps({
   restId: {
@@ -9,12 +10,22 @@ const props = defineProps({
   },
 })
 const rest=ref([])
+const errors =ref([])
+const { isAppRtl } = useThemeConfig()
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
-axios.defaults.headers.common['Language'] = 'ar'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+}
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+}
 axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+axios.defaults.headers.common['role'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'Bearer ' + token
 const router = useRouter()
 const selectedStatus = ref()
 const isTrue = ref(false)
@@ -92,12 +103,13 @@ const sendFrom = () => {
         disabled.value = false
         router.replace(route.query.to ? String(route.query.to) : '/admin/apps/restaurants/view/'+props.restId)
       }).catch(e => {
-        console.log(e.response)
+     //   const { errors: formErrors } = e.response
 
-        errors.value = e.response.data.message
-        isError.value = true
-        loading.value = false
-        disabled.value = false
+      //  errors.value = e.data
+
+     //   isError.value = true
+      //  loading.value = false
+      //  disabled.value = false
       })
     } else {
 

@@ -9,6 +9,7 @@ import axios from '@axios'
 import {
   requiredValidator,
 } from '@validators'
+import {useThemeConfig} from "@core/composable/useThemeConfig";
 
 const refInputEl_front = ref()
 const selectedRole = ref()
@@ -48,6 +49,7 @@ const isTrue = ref(false)
 const isError = ref(false)
 const disabled = ref(false)
 const loading = ref(false)
+const { isAppRtl } = useThemeConfig()
 const changeSliderFont = file_front => {
 
 
@@ -65,13 +67,40 @@ const changeSliderFont = file_front => {
 let token = localStorage.getItem('accessToken')
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.common['Accept'] = 'application/json'
-axios.defaults.headers.common['Language'] = 'ar'
+if(isAppRtl.value===true)
+{
+  axios.defaults.headers.common['Language'] = 'ar'
+}
+else
+{
+  axios.defaults.headers.common['Language'] = 'en'
+}
 axios.defaults.headers.common['type'] = 'Admin'
-axios.defaults.headers.common['auth'] = 'token ' + token
+axios.defaults.headers.common['role'] = 'Admin'
+axios.defaults.headers.common['auth'] = 'Bearer ' + token
 const userData = ref(structuredClone(toRaw(props.userData)))
 
 selectedRole.value=userData.value.admin_role_id
+const roles =ref([])
+const fetchProjectData = () => {
 
+
+  axios.get('/roles/select', { token })
+    .then(response => {
+
+      for (var i=0 ; i< response.data.length;i++)
+      {
+
+        roles.value[i]={ title: response.data[i].role_name, value: response.data[i].id }
+      }
+      console.log(roles.value, 'res')
+
+    })
+
+
+}
+
+watch(router, fetchProjectData, { immediate: true })
 
 const onFormSubmit = () => {
 

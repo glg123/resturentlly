@@ -34,8 +34,8 @@ const errors = ref({
 })
 
 const refVForm = ref()
-const email = ref('admin@demo.com')
-const password = ref('admin')
+const email = ref('')
+const password = ref('')
 const rememberMe = ref(false)
 
 const login = () => {
@@ -51,8 +51,7 @@ const login = () => {
     localStorage.setItem('userData', JSON.stringify(userData))
     localStorage.setItem('accessToken', accessToken)
     VueCookies.set('auth', accessToken)
-    // Redirect to `to` query if exist or redirect to index route
-    router.replace(route.query.to ? String(route.query.to) : '/admin/')
+    router.replace(route.query.to ? String(route.query.to) : '/admin/apps/admins/profile/my')
   }).catch(e => {
     const { errors: formErrors } = e.response.data
 

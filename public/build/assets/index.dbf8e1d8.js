@@ -1,0 +1,1 @@
+import{o,l as t,be as s,W as r}from"./main.e5722c22.js";import{b as e}from"./route-block.2f1a6263.js";const a={__name:"index",setup(n){return s(),r(),(c,l)=>(o(),t("h1",null,"floors list"))}};typeof e=="function"&&e(a);export{a as default};

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 @if(app()->getLocale() === "en")
     <html lang="{{app()->getLocale()}}">
+
     @else
-        <html lang="{{app()->getLocale()}}">
+  <html lang="{{app()->getLocale()}}">
         @endif
 
 
@@ -83,7 +84,7 @@
                                             </a>
                                             <div class="dropdown-menu m-0">
 
-                                                <a href="" class="dropdown-item">  {{__('views.my_profile')}}</a>
+                                                <a href="/customers/profile" class="dropdown-item">  {{__('views.my_profile')}}</a>
                                                 <a id="logout" href="#"
                                                    class="dropdown-item">  {{__('views.logout')}}</a>
 

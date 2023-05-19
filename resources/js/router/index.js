@@ -40,6 +40,68 @@ const router = createRouter({
       },
     },
     {
+      path: '/customers/',
+      redirect: to => {
+        console.log('customers')
+
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+
+        const userRole = userData && userData.role ? userData.role : null
+        if (userRole === 'admin')
+        {
+          return { name: 'admin-analytics' }
+        }
+
+        if (userRole === 'client')
+        {
+          return { name: 'access-control' }
+        }
+        if (userRole === 'customer')
+        {
+          console.log('customers')
+
+          return { name: 'customers-my' }
+        }
+
+        return   { path: '/customers/login' }
+
+      },
+    },
+    {
+      path: '/staff/',
+      redirect: to => {
+        console.log('staff')
+
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+
+        const userRole = userData && userData.role ? userData.role : null
+        if (userRole === 'admin')
+        {
+          return { name: 'admin-analytics' }
+        }
+
+        if (userRole === 'client')
+        {
+          return { name: 'access-control' }
+        }
+        if (userRole === 'customer')
+        {
+          console.log('customers')
+
+          return { name: 'customers-my' }
+        }
+        if (userRole === 'staff')
+        {
+          console.log('staff')
+
+          return { name: 'staff-my' }
+        }
+
+        return   { path: '/staff/login' }
+
+      },
+    },
+    {
       path: '/dashboards/pages/user-profile',
       redirect: () => ({ name: 'dashboards-pages-user-profile-tab', params: { tab: 'profile' } }),
     },
@@ -90,9 +152,14 @@ router.beforeEach(to => {
 
     */
   if (canNavigate(to)) {
+    console.log('customers')
     if (to.meta.redirectIfLoggedIn && isLoggedIn)
     {
+
+      console.log('customers_re')
+
       const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+
       const userRole = userData && userData.role ? userData.role : null
 
       if (userRole === 'admin')
@@ -103,25 +170,61 @@ router.beforeEach(to => {
       else if (userRole === 'client')
       {
         //window.location.reload();
-
+        return '/dashboards/'
       //  return '/'
+      }
+      else if (userRole === 'customer')
+      {
+        return '/customers/'
+
+      }
+      else if (userRole === 'staff')
+      {
+        return '/staff/'
+
       }
 
 
+    }
+    else
+    {
+     // return { name: 'not-authorized-guest', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
 
+   //   console.log('customers2222')
+   //   return { name: 'not-authorized-guest' }
     }
 
   }
   else {
-
+    console.log(to.fullPath)
     if (isLoggedIn)
     {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+      const userRole = userData && userData.role ? userData.role : null
+      console.log('customers_auth',userRole)
+      if(userRole != 'admin')
+      {
+        return { name: 'not-authorized-guest' }
+      }
+      if(userRole != 'admin')
+      {
+        return { name: 'not-authorized-customer' }
+      }
 
-      return { name: 'not-authorized' }
+      else
+      {
+        return { name: 'dashboards-login' }
+      }
+
     }
 
     else
     {
+      console.log('customers_not_auth')
+      if(to.fullPath==='/register')
+      {
+        return { name: '/register', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
+      }
       if(to.fullPath==='/admin/login')
       {
         return { name: 'admin-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
@@ -131,9 +234,19 @@ router.beforeEach(to => {
       {
         return { name: 'dashboards-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
       }
+      if(to.fullPath==='/customers/login')
+      {
+
+        return { name: 'customers-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
+      }
+      if(to.fullPath==='/staff/login')
+      {
+
+        return { name: 'staff-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
+      }
       else {
-        return { name: 'not-authorized' }
-        return { name: 'admin-login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
+        return { name: 'not-authorized-guest' }
+      //  return { name: 'choose_login', query: { to: to.name !== 'index' ? to.fullPath : undefined } }
       }
 
     }
